@@ -1,0 +1,210 @@
+
+:root {
+  /* Heading font (elegant serif) */
+  --font-heading: 'Playfair Display', serif;
+
+  /* Body font (modern sans-serif) */
+  --font-body: 'Poppins', sans-serif;
+
+  /* Optional backups (choose later) */
+  --font-body-alt1: 'Inter', sans-serif;
+  --font-body-alt2: 'Montserrat', sans-serif;
+  /* Backgrounds */
+  --bg-primary: #000000;        
+  --bg-secondary: #0a0f2e;      
+  --bg-tertiary: #1a2238;       
+
+  /* Text colors */
+  --text-primary: #e0e0e0;      
+  --text-secondary: #b0b0b0;    
+  --text-highlight: #a7ffeb;    
+
+  /* Accents */
+  --accent-primary: #a7ffeb;    
+  --accent-secondary: #8b5e3c;  
+
+  /* Borders */
+  --border-light: #222a44;      
+  --border-accent: #8b5e3c;     
+
+  /* Buttons */
+  --button-bg: #ffff;         
+  --button-hover: #b0b0b0;
+  --button-text-primary: black;      
+  --button-text-hover: white;       
+
+  --font-primary: 'Playfair Display', serif;
+}
+
+/* ===========================
+   GLOBAL STYLES
+   =========================== */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-primary);
+}
+
+h1 {
+  color: white;
+}
+
+/* ===========================
+   HEADER — ONE HORIZONTAL ROW
+   =========================== */
+header {
+    display: flex;
+    align-items: center;     /* vertically centers all items */
+    justify-content: space-between;
+    padding: 1.5rem 2rem;
+    position: relative;
+}
+
+/* LOGO LEFT SIDE */
+.header-logo .logo img {
+    padding-left: 5rem;;
+    height: 8rem;
+    width: auto;
+}
+
+/* NAVIGATION — CENTERED */
+.navigation {
+    display: flex;
+    gap: 2rem;
+    border: none;            /* removes your bottom line */
+    padding: 0;              /* clean reset */
+    margin: 0;
+}
+
+.navigation a {
+    font-family: var(--font-body-alt1);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
+.navigation a:hover {
+    color: var(--button-hover);
+}
+
+/* BOOK NOW — RIGHT SIDE */
+.book-button {
+    margin: 0 5rem;               /* remove all negative spacing */
+}
+
+#book-now-button {
+    font-size: 1.5rem;
+    border-radius: 1.25rem;
+    padding: 1rem 2rem;
+    background-color: var(--button-bg);
+    color: var(--button-text-primary);
+    border: none;
+    cursor: pointer;
+}
+
+#book-now-button:hover {
+    background-color: var(--button-hover);
+    color: var(--button-text-hover)
+    
+}
+
+
+/* ===========================
+   HERO / INTRO SECTION (left)
+   =========================== */
+.intro-text {
+  font-size: 2rem;
+  margin-left: 10rem; ;
+  padding: 3rem 5rem;
+  color: var(--text-secondary);
+  line-height: 2.5rem;
+  text-align: left;
+}
+
+.intro-text h2 {
+  margin-bottom: 0.5rem;
+}
+
+.intro-small-text {
+  font-style: italic;
+  color: var(--text-secondary);
+  font-weight: 300;
+  
+}
+
+.intro-big-text {
+  font-size: 13rem;
+  line-height: 12rem;  
+  margin: 0;
+  color: var(--text-primary);
+  font-weight:500;
+}
+/* RIGHT SIDE IMAGES (using your .welcome-page-pic1 & .welcome-page-pic2) */
+.welcome-pictures {
+    width: 50%;
+    position: relative;
+}
+
+/* top image */
+.welcome-page-pic1 img {
+    width: 32rem;
+    border-radius: 1rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+/* bottom smaller overlapping image */
+.welcome-page-pic2 img {
+    width: 100rem;
+    border-radius: 1rem;
+    position: absolute;
+    top: 50rem;
+    right: 12rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+.welcome-message {
+    position: absolute;
+    top: 35rem;
+    right: 7rem;
+    width: 35rem;
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    color: var(--text-secondary);
+}
+/* ===========================
+   FEATURED ITEMS
+   =========================== */
+.featured-items {
+  padding: 3rem;
+}
+
+.featured-items h2 {
+  font-size: 2rem;
+  color: var(--text-highlight);
+}
+
+.featured-items ul {
+  list-style: none;
+  padding: 0;
+}
+
+.featured-items li {
+  margin: 0.5rem 0;
+  color: var(--text-secondary);
+}
+
+/* ===========================
+   FOOTER
+   =========================== */
+footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid var(--border-light);
+  color: var(--text-secondary);
+}
