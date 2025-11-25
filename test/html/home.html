@@ -9,59 +9,55 @@
 
     <title>Bat Cave Cafe</title>
 </head>
-
 <body>
-
-    <!-- ===========================
-         HEADER
-    ============================ -->
     <header>
+        <div class="logo">
+            <img src="../img/logo.png" alt="Bat Cave Cafe Logo">
+        </div>
 
-        <!-- Logo (left) -->
-        <section class="header-logo">
-            <div class="logo">
-                <img src="../img/logo.png" alt="Bat Cave Cafe Logo">
-            </div>
-        </section>
+        <nav id="header-nav">
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a href="bookings.html">Bookings</a></li>
+                <li><a href="about.html">About Us</a></li>
+            </ul>
+        </nav>
 
-        <!-- Navigation (center) -->
-        <section class="navigation">
-            <a href="home.html">Home</a>
-            <a href="menu.html">Menu</a>
-            <a href="bookings.html">Bookings</a>
-            <a href="about.html">About Us</a>
-        </section>
-
-        <!-- Book Now button (right) -->
-        <section class="book-button">
+        <div class="book-button">
             <button id="book-now-button" onclick="window.location.href='bookings.html'">
                 Book Now
             </button>
-        </section>
-
+        </div>
     </header>
 
-    <!-- ===========================
-         MAIN CONTENT
-    ============================ -->
     <main>
-
         <section class="welcome-section">
-    <div class="intro-text">
-        <h2><span class="intro-small-text">Welcome to</span></h2>
-        <h1 class="intro-big-text">Bat Cave <br>Cafe</h1>
-        <p class="welcome-message">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel, velit quae quod error corporis 
-            consectetur vitae quis architecto atque sapiente debitis suscipit vero, quibusdam ipsum quam,
-            dolor itaque. Alias, molestiae.
-        </p>
-    </div>
+            <div>
+                <figure id="welcome-img1">
+                    <img src="../img/img6.jpg" alt="">
+                </figure>
 
-    <div class="welcome-images">
-        <img class="pic pic1" src="../img/img10.jpg" alt="">
-        <img class="pic pic2" src="../img/img6.jpg" alt="">
-    </div>
-</section>
+                <div class="intro-small-text">Welcome to</div>
+                <h1 class="intro-big-text">
+                    Bat Cave<br>
+                    Cafe
+                </h1>
+            </div>
+            
+            
+            <div>
+                <figure id="welcome-img2">
+                    <img src="../img/img10.jpg" alt="">
+                </figure>
+
+                <p class="intro-paragraph">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel, velit quae quod error corporis 
+                    consectetur vitae quis architecto atque sapiente debitis suscipit vero, quibusdam ipsum quam,
+                    dolor itaque. Alias, molestiae.
+                </p>
+            </div>
+        </section>
         <!-- Featured menu items -->
         <section class="featured-items">
             <h2>Featured Menu Items</h2>
@@ -71,12 +67,8 @@
                 <li>Dark Knight Coffee - A bold brew to keep you going.</li>
             </ul>
         </section>
-
     </main>
 
-    <!-- ===========================
-         FOOTER
-    ============================ -->
     <footer>
         <p>&copy; 2024 Bat Cave Cafe. All rights reserved.</p>
     </footer>
