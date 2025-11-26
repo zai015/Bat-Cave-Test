@@ -23,12 +23,6 @@
                 <li><a href="about.html">About Us</a></li>
             </ul>
         </nav>
-
-        <div class="book-button">
-            <button id="book-now-button" onclick="window.location.href='bookings.html'">
-                Book Now
-            </button>
-        </div>
     </header>
 
     <main>
@@ -50,55 +44,175 @@
                 <figure id="welcome-img2">
                     <img src="../img/img12.jpg" alt="">
                 </figure>
-
+                
                 <p class="intro-paragraph">
-                   Study, sip, and relax at Bat Cave Cafe - your cozy corner for coffee and focus. Book your spot today!
+                    <br><br>
+                    Study, sip, and relax at Bat Cave Cafe - your cozy corner for coffee and focus. Book your spot today!
                 </p>
             </div>
+
+             <div class="book-button">
+            <button id="book-now-button" onclick="window.location.href='bookings.html'">
+                Book Now
+            </button>
+        </div>
         </section>
 
-        <br><br><br>
-
-        <hr>
-
-        <br><br><br><br><br><br><br>
+        <br><br><br><br>
 
             <section id="mission-vision-statement">
-                <div class="mission-vision-group">
-                    <div class="mission-statement">
-                        <h3 id="mission-header">Mission</h3>
-                        <hr>
-                        <br>
-                        <p id="mission-paragraph">
-                            The Malvar Bat Cave Cafe is dedicated to providing a consistently comfortable, secure, and inspiring environment where students can focus and socialize. We commit to serving high-quality coffee and nourishment, and offering a seamless, professional experience through functional services like our dedicated reservation system, ensuring every visit lights up the path to their next achievement.
-                        </p>
-                    </div>
-                    <div class="mission-vision-img overlay-img">
-                        <img src="../img/pic4.jpg" alt="Mission Image" class="overlay-image">
-                    </div>
+                <div class="about-us-header">
+                    <h2>About Us</h2>
                 </div>
 
-                <div class="mission-vision-group">
-                    <div class="mission-vision-img overlay-img">
-                        <img src="../img/pic2.jpg" alt="Vision Image" class="overlay-image">
+                <div class="carousel-container">
+                    <!-- LEFT BUTTON -->
+                    <button class="carousel-btn prev" id="prev-btn">❮</button>
+
+                    <div class="carousel-wrapper">
+                        <!-- MISSION SLIDE -->
+                        <div class="carousel-item active">
+                            <div class="carousel-image">
+                                <img src="../img/pic5.jpg" alt="Mission Image">
+                            </div>
+                            <div class="carousel-content">
+                                <h3>Mission</h3>
+                                <hr>
+                                <p>
+                                    <br>
+                                    The Malvar Bat Cave Cafe is dedicated to providing a consistently comfortable, secure, and inspiring environment where students can focus and socialize. We commit to serving high-quality coffee and nourishment, and offering a seamless, professional experience through functional services like our dedicated reservation system, ensuring every visit lights up the path to their next achievement.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- VISION SLIDE -->
+                        <div class="carousel-item">
+                            <div class="carousel-content">
+                                <h3>Vision</h3>
+                                <hr>
+                                <p>
+                                    <br>
+                                    To be the undisputed sanctuary and second home for the BSU community, recognized as the best late-night establishment that fuels academic success, fosters genuine connection, and elevates the local coffee culture in Malvar.
+                                </p>
+                            </div>
+                            <div class="carousel-image">
+                                <img src="../img/pic7.jpg" alt="Vision Image">
+                            </div>
+                        </div>
                     </div>
-                    <div class="vision-statement">
-                        <h3 id="vision-header">Vision</h3>
-                        <hr>
-                        <br>
-                        <p id="vision-paragraph">
-                            To be the undisputed sanctuary and second home for the BSU community, recognized as the best late-night establishment that fuels academic success, fosters genuine connection, and elevates the local coffee culture in Malvar.
-                        </p>
+
+                    <!-- RIGHT BUTTON -->
+                    <button class="carousel-btn next" id="next-btn">❯</button>
+
+                    <!-- DOTS -->
+                    <div class="carousel-dots">
+                        <span class="dot active" data-index="0"></span>
+                        <span class="dot" data-index="1"></span>
                     </div>
                 </div>
             </section>
 
-    </main>
+            <!--START OF MENU SECTION-->
+           
+            
+            <br><br><br><br><br><br><br><br><br><br><br>
+            <section class="menu" id="menu">
 
-    <footer>
-        <p>&copy; 2024 Bat Cave Cafe. All rights reserved.</p>
-    </footer>
+                <div id="menu-heading">
+                    <h3>Popular Menu</h3>
+                </div>
+                <br>
+                <div class="box-container">
+                    <div class="box">
+                        <img src="../img/1.png" alt="Latte Art Swirl">
+                        <h3>Latte Art Swirl</h3>
+                    </div>
+
+                    <div class="box">
+                        <img src="../img/2.png" alt="Iced Cofee">
+                        <h3>Iced Coffee</h3>
+                    </div>
+
+                    <div class="box">
+                        <img src="../img/3.png" alt="Caramel Macchiato">
+                        <h3>Caramel Macchiato</h3>
+                    </div>
+
+                    <div class="box">
+                        <img src="../img/4.png" alt="Cold Brew Cascara Fizz">
+                        <h3>Cold Brew Cascara Fizz</h3>
+                    </div>
+            
+                    <div class="box">
+                        <img src="../img/5.png" alt="Americano">
+                        <h3>Americano</h3>
+                    </div>
+
+                    <div class="box">
+                        <img src="../img/6.png" alt="Matcha Latte">
+                        <h3>Matcha Latte</h3>
+                    </div>
+
+                </div>
+                 
+            </section>
+            <!--END OF MENU SECTION-->
+
+            <!--START OF GALLERY SECTION-->
+            <br><br><br><br><br><br><br><br><br><br><br>
+            <section class="gallery" id="gallery">
+
+                <div id="gallery-heading">
+                    <h3>Gallery</h3>
+                </div>
+                <br><br>
+                <div class="box-container">
+                    <img src="../img/gal1.png" alt="">
+                    <img src="../img/gal2.png" alt="">
+                    <img src="../img/gal3.png" alt="">
+                    <img src="../img/gal4.png" alt="">
+                    <img src="../img/gal5.png" alt="">
+                    <img src="../img/gal6.png" alt="">
+                    <img src="../img/gal9.png" alt="">
+                    <img src="../img/gal8.png" alt="">
+                </div>
+            </section>
+            <!--END OF GALLERY SECTION-->
+
+    </main>
+    <!--START OF FOOTER-->
+    <br><br><br><br><br><br><br><br>
+   <section class="footer">
+
+    <div class="box-container">
+
+        <div class="box">
+            <h3>LOCATION</h3>
+            <p>456, Malvar Batangas</p>
+            <p>PH 9001</p>
+        </div>
+
+        <div class="box">
+            <h3>CONTACTS</h3>
+            <p>malvarbatcavecafe@gmail.com</p>
+            <p>+111-222-3333</p>
+        </div>
+
+        <div class="box">
+            <h3>OPENING HOURS</h3>
+            <p>Weekdays: 07:00am - 09:00pm</p>
+            <p>Weekends: 08:00am - 10:00pm</p>
+        </div>
+
+    </div>
+
+    <div class="credit">
+        &copy; copyright @ 2025 by <span>GROUP 11</span> | all rights reserved
+    </div>
+
+</section>
 
     <script src="../js/scroll-animations.js"></script>
+    <script src="../js/carousel.js"></script>
 </body>
 </html>
