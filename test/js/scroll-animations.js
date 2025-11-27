@@ -80,3 +80,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }, { passive: true });
 });
 
+//back to top btn
+    document.getElementById("backToTopBtn").onclick = function () {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+
