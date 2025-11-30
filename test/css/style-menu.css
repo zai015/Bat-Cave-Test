@@ -1,0 +1,333 @@
+:root{
+  --bg: #080707;
+  --panel:#111213;
+  --muted:#a8a8a8;
+  --accent:#14b89c; /* mint-ish */
+  --border: rgba(255,255,255,0.06);
+  --card-radius: 12px;
+}
+
+*{box-sizing:border-box}
+html,body{
+  height:100%;
+  margin:0;
+  background:var(--bg);
+  color:#eee;
+  scroll-behavior: smooth;
+  font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial
+}
+
+/* subtle background texture feel (uses gradient) */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(1200px 600px at 10% 10%, rgba(255,255,255,0.02), transparent 10%),
+    linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0));
+  pointer-events:none; 
+  z-index:0;
+}
+
+/* NAV */
+.nav{
+  position:sticky;
+  top:0;
+  background:#000;
+  border-bottom:1px solid rgba(255,255,255,0.03);
+  z-index:50
+}
+.nav-inner{
+  max-width:1200px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 24px
+}
+.logo{
+  height:44px;
+  object-fit:contain
+}
+.nav-links{
+  list-style:none;
+  display:flex;
+  gap:28px;
+  margin:0;
+  padding:0;
+  align-items:center
+}
+.nav-links a{
+  color:#bfbfbf;
+  text-decoration:none;
+  font-size:15px;
+  opacity:0.95
+}
+.nav-links a.active, .nav-links a:hover{
+  color:#fff
+}
+
+/* Header */
+.page-header{
+  max-width:1200px;
+  margin:36px auto 12px;
+  padding:0 24px;
+  text-align:left
+}
+.page-header h1{
+  font-family:"Playfair Display", serif;
+  font-size:44px;
+  margin:6px 0;
+  color:#fff;
+  letter-spacing:0.6px
+}
+.lead{
+  color:var(--muted);
+  margin-top:6px
+}
+
+/* Filters (pills) */
+.filters{
+  max-width:1200px;
+  margin:18px auto;
+  padding:0 24px;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap
+}
+.pill{
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--muted);
+  padding:8px 18px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:600;
+  transition:all .22s;
+}
+.pill:hover{
+  transform:translateY(-3px);
+  box-shadow:0 6px 18px rgba(0,0,0,0.6)
+}
+.pill.active{
+  background:var(--panel);
+  border-color:var(--accent);
+  color:var(--accent);
+}
+
+/* Menu wrap */
+.menu-wrap{
+  max-width:1200px;
+  margin:18px auto;
+  padding:0 24px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px
+}
+
+/* Card */
+.menu-card{
+  display:flex;
+  gap:18px;
+  align-items:stretch;
+  background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.008));
+  border-radius:var(--card-radius);
+  padding:14px;
+  border:1px solid var(--border);
+  overflow:hidden;
+  transition:transform .25s, box-shadow .25s, border-color .25s;
+}
+.menu-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 18px 40px rgba(0,0,0,0.6);
+  border-color:rgba(20,184,156,0.12)
+}
+
+/* Left image */
+.card-media{
+  flex:0 0 150px;
+  border-radius:8px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.card-media img{
+  width:150px;
+  height:150px;
+  object-fit:cover;
+  display:block
+}
+
+/* Right body */
+.card-body{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:6px 2px
+}
+.card-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px
+}
+.item-title{
+  font-family:"Playfair Display", serif;
+  font-size:20px;
+  margin:0;
+  color:#fff
+}
+.item-title .muted{
+  font-size:13px;
+  color:var(--muted);
+  font-weight:400;
+  margin-left:6px
+}
+.price{
+  color:var(--accent);
+  font-weight:700;
+  font-size:18px;
+  white-space:nowrap
+}
+
+/* subtitle + description */
+.item-sub{
+  color:var(--muted);
+  margin:6px 0 8px;
+  font-weight:600
+}
+.item-desc{
+  color:#cfcfcf;
+  margin:0;
+  line-height:1.45
+}
+
+.space{
+  margin-bottom: 10rem ;
+}
+/*  START OF FOOTER  */
+.footer {
+  width: 100%;
+  padding: 3rem 1rem;
+  color: white;
+}
+
+.footer .box-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+  padding: 2rem clamp(2rem, 10vw, 9rem);
+}
+
+.footer .box {
+  text-align: left;
+}
+
+.footer .footer-logo {
+  width: clamp(80px, 10vw, 120px);
+  margin-bottom: 1rem;
+}
+
+.footer .social-icons {
+  display: flex;
+  gap: 12px;
+  margin: 1rem 0;
+  align-items: center;
+}
+
+.footer .social-icons img {
+  width: clamp(25px, 5vw, 30px);
+  height: clamp(25px, 5vw, 30px);
+  object-fit: contain;
+}
+
+.footer .box h3 {
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  letter-spacing: 2px;
+  color: #9bd6b6;
+  margin-bottom: 1rem;
+}
+
+.footer .box p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  margin: 0.3rem 0;
+}
+
+.footer .credit {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #333;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+}
+
+.footer .credit span {
+  color: #9bd6b6;
+}
+/*  START OF BACK TO TOP BUTTON  */
+.back-to-top-button {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  background-color: transparent;
+  color: white;
+  font-weight: bold;
+  border: 1px solid white;
+  cursor: pointer;
+  transition: 0.3s ease;
+  margin-top: 1rem;
+  user-select: none;
+  margin-left: clamp(1rem, 10vw, 9rem);
+}
+
+#backToTop {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.649);
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.649);
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.3s ease;
+  z-index: 1500;
+}
+
+#backToTop.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+#backToTop:hover {
+  background-color: transparent;
+  color: white;
+  border-color: white;
+}
+
+/* Responsive: single column on smaller screens */
+@media (max-width:900px){
+  .menu-wrap{grid-template-columns:1fr}
+  .card-media{flex:0 0 120px}
+  .card-media img{width:120px;height:120px}
+  .page-header h1{font-size:36px}
+}
+
+/* Very small screens: stack image on top of content (if narrow) */
+@media (max-width:480px){
+  .menu-card{flex-direction:row} /* keep row but smaller image */
+  .card-media{flex-basis:100px}
+  .card-media img{width:100px;height:100px}
+  .item-title{font-size:18px}
+  .price{font-size:16px}
+}
