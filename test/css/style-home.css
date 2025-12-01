@@ -17,7 +17,7 @@
   --text-highlight: #a7ffeb;
 
   /* Accents */
-  --accent-primary: #a7ffeb;
+  --accent-primary: #14b89c;
   --accent-secondary: #8b5e3c;
 
   /* Borders */
@@ -203,47 +203,49 @@ header {
 /* LOGO */
 .logo {
   justify-self: start;
+  display: inline;
+  position: relative;
+  left: 14rem;
 }
 
 .logo img {
-  height: var(--header-height);
-  width: auto;
-  max-width: 100%;
+  height: 80px;
+  object-fit: contain;
 }
 
 /* NAVIGATION */
-#header-nav ul {
+/* NAV WRAPPER */
+#header-nav {
   display: flex;
-  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  padding: 1.2rem 0;
 }
 
+/* UL layout */
+#header-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 28px;          /* consistent spacing */
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+/* LINKS */
 #header-nav a {
   font-family: var(--font-body-alt1);
-  font-size: clamp(0.9rem, 2vw, 1rem);
-  color: var(--text-secondary);
+  font-size: 18px;
+  color: #bfbfbf;      /* grey inactive */
   text-decoration: none;
-  letter-spacing: 0.1rem;
+  opacity: 0.95;
   transition: color 0.3s ease;
-  position: relative;
 }
 
+/* Active + Hover */
+#header-nav a.active,
 #header-nav a:hover {
-  color: var(--text-primary);
-}
-
-#header-nav a::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: var(--accent-primary);
-  transition: width 0.3s ease;
-}
-
-#header-nav a:hover::after {
-  width: 100%;
+  color: #fff;
 }
 
 /*  END OF HEADER  */
@@ -258,22 +260,30 @@ header {
 }
 
 #book-now-button {
-  border: none;
+  border: rgba(255, 255, 255, 0.337) solid;
   font-size: clamp(1rem, 2vw, 1.5rem);
   padding: 0.75rem 2rem  ;
-  background-color: var(--button-bg);
-  color: rgba(255, 255, 255, 0.781);
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.434);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 #book-now-button:hover {
-  background-color: rgba(57, 52, 52, 0.97);
-  color: var(--text-highlight);
-  animation: hoverLift 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.152);
+  color: white;
 }
 
 /*  START OF WELCOME SECTION    */
+#line-welcome{
+  display: flex;
+  position: relative;
+  top: 1.75rem;
+  left: 12rem;
+  width: 19rem;
+  border: rgba(255, 255, 255, 0.166) solid thin;
+
+}
 .welcome-section {
   padding-top: 10rem;
   padding-left: clamp(2rem, 12vw, 18rem);
@@ -593,7 +603,7 @@ header {
 
 #menu-heading {
   font-family: var(--font-heading);
-  font-size: 3rem;
+  font-size: 2rem;
   text-align: center;
 }
 
@@ -603,8 +613,12 @@ header {
   font-family: var(--font-heading);
   font-size: clamp(1.5rem, 3vw, 2rem);
   color: #b0b0b0;
-  
 }
+.menu .box-container .box h3:hover{
+  transform: scale(1.01);
+  color: white;
+}
+
 /*   END OF MENU SECTION   */
 
 /*  START OF GALLERY SECTION */
@@ -647,7 +661,7 @@ header {
 /*  START OF FOOTER  */
 .footer {
   width: 100%;
-  padding: 3rem 1rem;
+  padding: 1rem 1rem;
   color: white;
 }
 
@@ -663,8 +677,14 @@ header {
 }
 
 .footer .footer-logo {
-  width: clamp(80px, 10vw, 120px);
+  width: 17rem;
+  height: 17rem;
   margin-bottom: 1rem;
+  display: inline;
+  position: relative;
+  bottom: 7rem;
+  border: rgba(255, 255, 255, 0.342) solid;
+
 }
 
 .footer .social-icons {
@@ -672,19 +692,29 @@ header {
   gap: 12px;
   margin: 1rem 0;
   align-items: center;
+  bottom: 7rem;
 }
 
 .footer .social-icons img {
   width: clamp(25px, 5vw, 30px);
   height: clamp(25px, 5vw, 30px);
   object-fit: contain;
+  display: inline;
+  position: relative;
+  bottom: 6rem;
+
 }
 
 .footer .box h3 {
   font-size: clamp(1rem, 2vw, 1.1rem);
   letter-spacing: 2px;
-  color: #9bd6b6;
+  color: #14b89c;
   margin-bottom: 1rem;
+}
+.footer .footer-tagline{
+  display: inline;
+  position: relative;
+  bottom: 6rem;
 }
 
 .footer .box p {
@@ -709,6 +739,8 @@ header {
 /*  START OF BACK TO TOP BUTTON  */
 .back-to-top-button {
   display: inline-block;
+  position: relative;
+  bottom: 6rem;
   padding: 0.8rem 1.5rem;
   background-color: transparent;
   color: white;
@@ -719,6 +751,7 @@ header {
   margin-top: 1rem;
   user-select: none;
   margin-left: clamp(1rem, 10vw, 9rem);
+
 }
 
 #backToTop {
@@ -756,6 +789,10 @@ header {
 
 /*  END OF BACK TO TOP BUTTON  */
 
+::selection {
+  background-color: #09f7cbc2;
+  color: #000;
+}
 
 /*  START OF RESPONSIVE DESIGN  */
 /* Tablet and smaller desktop */
