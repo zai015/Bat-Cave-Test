@@ -2,13 +2,13 @@
 /*              SCROLL ANIMATIONS HANDLER                  */
 /* ======================================================= */
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -100px 0px'
   };
 
-  const observer = new IntersectionObserver(function(entries) {
+  const observer = new IntersectionObserver(function (entries) {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('active');
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Bit-size scroll event for continuous feedback
-  window.addEventListener('scroll', function() {
+  window.addEventListener('scroll', function () {
     // Add subtle parallax or continuous scroll feedback if needed
     const scrollProgress = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
     document.documentElement.style.setProperty('--scroll-progress', scrollProgress);
@@ -81,8 +81,48 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 //back to top btn
-    document.getElementById("backToTopBtn").onclick = function () {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
+document.getElementById("backToTopBtn").onclick = function () {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
 
 
+
+const MENU_API_URL = '../php/menu_handler.php';
+
+document.addEventListener('DOMContentLoaded', () => {
+  fetchPopularMenu();
+});
+
+async function fetchPopularMenu() {
+  try {
+    const response = await fetch(MENU_API_URL);
+    const menuItems = await response.json();
+    renderPopularMenu(menuItems);
+  } catch (error) {
+    console.error('Error fetching menu:', error);
+  }
+}
+
+function renderPopularMenu(items) {
+  const container = document.getElementById('popular-menu-container');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  const popularItems = items.filter(item => item.isPopular);
+
+  if (popularItems.length === 0) {
+    container.innerHTML = '<p>No popular items at the moment.</p>';
+    return;
+  }
+
+  popularItems.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'box';
+    div.innerHTML = `
+            <img src="${item.image}" alt="${item.name}">
+            <h3>${item.name}</h3>
+        `;
+    container.appendChild(div);
+  });
+}
