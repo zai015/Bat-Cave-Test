@@ -82,6 +82,7 @@
                 </table>
             </section>
         </main>
+
     </div>
 
     <!-- Menu Item Modal -->
@@ -113,8 +114,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Image URL</label>
-                    <input type="text" id="itemImage" placeholder="../img/..." required>
+                    <label>Image</label>
+                    <input type="file" id="itemImageFile" accept="image/*">
+                    <input type="hidden" id="itemImage">
+                    <small id="currentImageText"
+                        style="display:block; color:var(--text-secondary); margin-top:5px;"></small>
                 </div>
 
                 <div class="form-group">

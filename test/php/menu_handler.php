@@ -5,6 +5,7 @@ header('Access-Control-Allow-Methods: GET, POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
 $dataFile = '../data/menu.json';
+$imgDir = '../img/';
 
 function getMenu()
 {
@@ -31,10 +32,19 @@ if ($method === 'GET') {
     $menu = getMenu();
     echo json_encode($menu);
 } elseif ($method === 'POST') {
-    $input = json_decode(file_get_contents('php://input'), true);
+
+    // Check if it's a JSON request (delete action) or FormData (save/update)
+    $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+
+    if (strpos($contentType, 'application/json') !== false) {
+        $input = json_decode(file_get_contents('php://input'), true);
+    } else {
+        // Assume FormData
+        $input = $_POST;
+    }
 
     // Debug Logging
-    file_put_contents('debug_log.txt', date('Y-m-d H:i:s') . " - Input: " . print_r($input, true) . "\n", FILE_APPEND);
+    // file_put_contents('debug_log.txt', date('Y-m-d H:i:s') . " - Input: " . print_r($input, true) . "\n", FILE_APPEND);
 
     if (!$input) {
         http_response_code(400);
@@ -58,13 +68,54 @@ if ($method === 'GET') {
         exit;
     }
 
+    // Handle File Upload
+    $imagePath = $input['image'] ?? '';
+    if (isset($_FILES['imageFile']) && $_FILES['imageFile']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath = $_FILES['imageFile']['tmp_name'];
+        $fileName = $_FILES['imageFile']['name'];
+        $fileNameCmps = explode(".", $fileName);
+        $fileExtension = strtolower(end($fileNameCmps));
+
+        // Sanitize filename
+        $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+
+        // Ensure img dir exists
+        if (!file_exists($imgDir)) {
+            mkdir($imgDir, 0777, true);
+        }
+
+        $dest_path = $imgDir . $newFileName;
+
+        if (move_uploaded_file($fileTmpPath, $dest_path)) {
+            $imagePath = '../img/' . $newFileName;
+        }
+    }
+
+    // Prepare Item Data
+    $newItem = [
+        'name' => $input['name'] ?? '',
+        'price' => floatval($input['price'] ?? 0),
+        'category' => $input['category'] ?? '',
+        'image' => $imagePath,
+        'subDescription' => $input['subDescription'] ?? '',
+        'description' => $input['description'] ?? '',
+        'isPopular' => ($input['isPopular'] === '1' || $input['isPopular'] === 'true'),
+        'isSignature' => ($input['isSignature'] === '1' || $input['isSignature'] === 'true')
+    ];
+
     // Create or Update
     if (isset($input['id']) && !empty($input['id'])) {
         // Update existing
         $found = false;
         foreach ($menu as &$item) {
             if ($item['id'] === $input['id']) {
-                $item = array_merge($item, $input);
+                $newItem['id'] = $item['id'];
+                // If no new image uploaded and no existing image passed (shouldn't happen with hidden input), keep old
+                if (empty($newItem['image'])) {
+                    $newItem['image'] = $item['image'];
+                }
+
+                $item = array_merge($item, $newItem);
                 $found = true;
                 break;
             }
@@ -76,18 +127,15 @@ if ($method === 'GET') {
         }
     } else {
         // Create new
-        $newItem = $input;
         $newItem['id'] = uniqid('item_');
         $menu[] = $newItem;
     }
 
     if (!saveMenu($menu)) {
-        file_put_contents('debug_log.txt', date('Y-m-d H:i:s') . " - Save Failed\n", FILE_APPEND);
         http_response_code(500);
         echo json_encode(['error' => 'Failed to write to menu file']);
         exit;
     }
-    file_put_contents('debug_log.txt', date('Y-m-d H:i:s') . " - Save Success\n", FILE_APPEND);
     echo json_encode(['success' => true]);
 }
 ?>

@@ -158,6 +158,7 @@ function openMenuModal(itemId = null) {
     const modal = document.getElementById('menuModal');
     const title = document.getElementById('modalTitle');
     const form = document.getElementById('menuForm');
+    const currentImageText = document.getElementById('currentImageText');
 
     modal.style.display = 'block';
 
@@ -168,15 +169,19 @@ function openMenuModal(itemId = null) {
         document.getElementById('itemName').value = item.name;
         document.getElementById('itemPrice').value = item.price;
         document.getElementById('itemCategory').value = item.category;
-        document.getElementById('itemImage').value = item.image;
+        document.getElementById('itemImage').value = item.image; // Hidden input
         document.getElementById('itemSub').value = item.subDescription || '';
         document.getElementById('itemDesc').value = item.description || '';
         document.getElementById('itemPopular').checked = item.isPopular;
         document.getElementById('itemSignature').checked = item.isSignature;
+
+        currentImageText.textContent = `Current: ${item.image}`;
     } else {
         title.textContent = 'Add Menu Item';
         form.reset();
         document.getElementById('itemId').value = '';
+        document.getElementById('itemImage').value = '';
+        currentImageText.textContent = '';
     }
 }
 
@@ -198,23 +203,29 @@ function editMenuItem(id) {
 async function saveMenuItem(e) {
     e.preventDefault();
 
-    const item = {
-        id: document.getElementById('itemId').value,
-        name: document.getElementById('itemName').value,
-        price: parseFloat(document.getElementById('itemPrice').value),
-        category: document.getElementById('itemCategory').value,
-        image: document.getElementById('itemImage').value,
-        subDescription: document.getElementById('itemSub').value,
-        description: document.getElementById('itemDesc').value,
-        isPopular: document.getElementById('itemPopular').checked,
-        isSignature: document.getElementById('itemSignature').checked
-    };
+    const formData = new FormData();
+    formData.append('id', document.getElementById('itemId').value);
+    formData.append('name', document.getElementById('itemName').value);
+    formData.append('price', document.getElementById('itemPrice').value);
+    formData.append('category', document.getElementById('itemCategory').value);
+    formData.append('subDescription', document.getElementById('itemSub').value);
+    formData.append('description', document.getElementById('itemDesc').value);
+    formData.append('isPopular', document.getElementById('itemPopular').checked ? '1' : '0');
+    formData.append('isSignature', document.getElementById('itemSignature').checked ? '1' : '0');
+
+    // Handle Image
+    const fileInput = document.getElementById('itemImageFile');
+    if (fileInput.files.length > 0) {
+        formData.append('imageFile', fileInput.files[0]);
+    } else {
+        // If no new file, send the existing path
+        formData.append('image', document.getElementById('itemImage').value);
+    }
 
     try {
         const response = await fetch(MENU_API_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(item)
+            body: formData // No Content-Type header needed, browser sets it for FormData
         });
 
         if (response.ok) {
