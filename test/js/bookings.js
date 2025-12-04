@@ -138,36 +138,39 @@ function selectDate(dateStr, cellElement) {
 
 function updateStartTimeOptions() {
     const options = startHourInput.options;
-    const dayBookings = bookings.filter(b => b.date === selectedDate && b.status !== 'cancelled' && b.status !== 'rejected');
+    const amPm = startAmPmInput.value;
 
     for (let i = 0; i < options.length; i++) {
         const opt = options[i];
-        if (opt.disabled && opt.value === "") continue; // Skip placeholder
+        if (opt.disabled && opt.value === "") continue;
 
         const h = parseInt(opt.value);
-        let amPm = 'PM';
-        if (h === 12) amPm = 'AM';
 
-        const timeStr = get24HourTime(opt.value, amPm); // e.g. "13:00"
+        // Validate Operating Hours (1 PM - 12 AM Start)
+        // PM: 1-11 valid, 12 invalid (Noon)
+        // AM: 12 valid (Midnight), 1-11 invalid (Morning)
+        let isValidOpHour = false;
+        if (amPm === 'PM') {
+            if (h !== 12) isValidOpHour = true;
+        } else { // AM
+            if (h === 12) isValidOpHour = true;
+        }
 
-        // Check availability for this specific hour slot
-        // We simulate a 1-hour check: checkAvailability(date, start, end)
-        // But checkAvailability checks a range. We just need to know if this specific hour is blocked.
-        // Let's reuse checkAvailability logic but simplified or just call it for 1 hour duration.
-        // Actually, checkAvailability returns available pax.
-        // If available pax == 0, then it's full.
+        if (!isValidOpHour) {
+            opt.disabled = true;
+            opt.textContent = opt.value + " (Closed)";
+            continue;
+        } else {
+            // Reset text if it was marked closed
+            opt.textContent = opt.value;
+        }
 
-        // Construct end time for 1 hour duration
+        const timeStr = get24HourTime(opt.value, amPm);
+
+        // Construct end time for 1 hour duration check
         let startH = parseInt(timeStr.split(':')[0]);
         let endH = startH + 1;
-        // Handle 24h wrap if needed, but get24HourTime returns 00:00 for 12AM.
-        // 00:00 -> 01:00.
-
         const endStr = `${String(endH).padStart(2, '0')}:00`;
-
-        // We need to pass the formatted strings to checkAvailability
-        // But wait, checkAvailability expects "HH:00".
-        // If startH is 23, endH is 24. checkAvailability normalizes.
 
         const available = checkAvailability(selectedDate, timeStr, endStr);
 
@@ -193,16 +196,30 @@ function updateEndTimeOptions() {
     startH = normalizeHour(startH);
 
     const options = endHourInput.options;
+    const endAmPm = endAmPmInput.value;
 
     for (let i = 0; i < options.length; i++) {
         const opt = options[i];
         if (opt.value === "") continue;
 
         const h = parseInt(opt.value);
-        let amPm = 'PM';
-        if (h === 12 || h === 1) amPm = 'AM';
 
-        const timeStr = get24HourTime(opt.value, amPm);
+        // Validate Operating Hours (1 PM - 1 AM End)
+        // PM: 1-11 valid, 12 invalid
+        // AM: 12, 1 valid. 2-11 invalid.
+        let isValidOpHour = false;
+        if (endAmPm === 'PM') {
+            if (h !== 12) isValidOpHour = true;
+        } else { // AM
+            if (h === 12 || h === 1) isValidOpHour = true;
+        }
+
+        if (!isValidOpHour) {
+            opt.disabled = true;
+            continue;
+        }
+
+        const timeStr = get24HourTime(opt.value, endAmPm);
         let optH = parseInt(timeStr.split(':')[0]);
         optH = normalizeHour(optH);
 
@@ -217,15 +234,13 @@ function updateEndTimeOptions() {
     const currentEndVal = endHourInput.value;
     if (currentEndVal) {
         const currentEndH = parseInt(currentEndVal);
-        let currentEndAmPm = 'PM';
-        if (currentEndH === 12 || currentEndH === 1) currentEndAmPm = 'AM';
-        const currentEndTimeStr = get24HourTime(currentEndVal, currentEndAmPm);
+        const currentEndTimeStr = get24HourTime(currentEndVal, endAmPm);
         let currentEndHNorm = parseInt(currentEndTimeStr.split(':')[0]);
         currentEndHNorm = normalizeHour(currentEndHNorm);
 
         if (currentEndHNorm <= startH) {
             endHourInput.value = "";
-            endAmPmInput.value = "PM";
+            // endAmPmInput.value = "PM"; // Don't reset AM/PM as user might be changing it
             document.getElementById('durationDisplay').textContent = "0";
             document.getElementById('totalCost').textContent = "0";
         }
@@ -250,6 +265,16 @@ function get24HourTime(hourStr, amPm) {
     if (amPm === 'PM' && hour < 12) hour += 12;
     if (amPm === 'AM' && hour === 12) hour = 0;
     return `${String(hour).padStart(2, '0')}:00`;
+}
+
+// Helper to format 24-hour time to 12-hour format
+function formatTime12(time24) {
+    if (!time24) return '';
+    let [hour, minute] = time24.split(':');
+    hour = parseInt(hour);
+    const amPm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12 || 12;
+    return `${hour}:${minute} ${amPm}`;
 }
 
 function normalizeHour(hour) {
@@ -304,25 +329,25 @@ function checkAvailability(date, startStr, endStr) {
     el.addEventListener('change', calculateCost);
 });
 
-// Special handler for End Hour to auto-set AM/PM
+// Special handler for End Hour to auto-set AM/PM (Removed to allow user control)
 endHourInput.addEventListener('change', () => {
-    const h = parseInt(endHourInput.value);
-    if (h === 12 || h === 1) {
-        endAmPmInput.value = 'AM';
-    } else {
-        endAmPmInput.value = 'PM';
-    }
     calculateCost();
 });
 
-// Special handler for Start Hour to auto-set AM/PM
+// Special handler for Start Hour to auto-set AM/PM (Removed to allow user control)
 startHourInput.addEventListener('change', () => {
-    const h = parseInt(startHourInput.value);
-    if (h === 12) {
-        startAmPmInput.value = 'AM';
-    } else {
-        startAmPmInput.value = 'PM';
-    }
+    updateEndTimeOptions();
+    calculateCost();
+});
+
+// Listeners for AM/PM changes
+startAmPmInput.addEventListener('change', () => {
+    updateStartTimeOptions();
+    updateEndTimeOptions();
+    calculateCost();
+});
+
+endAmPmInput.addEventListener('change', () => {
     updateEndTimeOptions();
     calculateCost();
 });
@@ -506,7 +531,7 @@ function showConfirmation(booking) {
         <p><strong>Status:</strong> <span style="color:orange">Pending Approval</span></p>
         <p><strong>Name:</strong> ${booking.contact.name}</p>
         <p><strong>Date:</strong> ${booking.date}</p>
-        <p><strong>Time:</strong> ${booking.startTime} - ${booking.endTime} (${booking.duration} hrs)</p>
+        <p><strong>Time:</strong> ${formatTime12(booking.startTime)} - ${formatTime12(booking.endTime)} (${booking.duration} hrs)</p>
         <p><strong>Mode:</strong> ${booking.mode} ${booking.mode === 'Study' ? `(${booking.pax} Pax)` : ''}</p>
         <p><strong>Total Cost:</strong> ₱${booking.cost}</p>
     `;
@@ -576,7 +601,7 @@ function renderBookingsList(bookingsList) {
         if (b.status === 'rejected') statusColor = '#f44336';
 
         card.innerHTML = `
-            <h3>${b.date} | ${b.startTime} - ${b.endTime}</h3>
+            <h3>${b.date} | ${formatTime12(b.startTime)} - ${formatTime12(b.endTime)}</h3>
             <p><strong>Mode:</strong> ${b.mode}</p>
             ${b.mode === 'Study' ? `<p><strong>Pax:</strong> ${b.pax}</p>` : ''}
             <p><strong>Cost:</strong> ₱${b.cost}</p>
