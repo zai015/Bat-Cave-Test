@@ -85,6 +85,42 @@ document.getElementById("backToTopBtn").onclick = function () {
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
+//gallery
+
+document.addEventListener("DOMContentLoaded", () => {
+  const galleryImages = document.querySelectorAll('.gallery .box-container img');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.querySelector('.lightbox-img');
+  const closeBtn = document.querySelector('#lightbox .close');
+
+  galleryImages.forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
+
+      // Show lightbox with fade-in
+      lightbox.classList.add('show');
+    });
+  });
+
+  function closeLightbox() {
+    // Remove show class to fade out
+    lightbox.classList.remove('show');
+    // Wait for transition to complete
+    setTimeout(() => {
+      lightboxImg.src = '';
+    }, 500); // matches CSS transition duration
+  }
+
+  closeBtn.addEventListener('click', closeLightbox);
+
+  lightbox.addEventListener('click', e => {
+    if(e.target === lightbox) closeLightbox();
+  });
+});
+
+
+
+
 
 
 const MENU_API_URL = '../php/menu_handler.php';
