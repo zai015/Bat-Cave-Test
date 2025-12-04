@@ -6,6 +6,7 @@ let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 let bookings = [];
 let userPhone = '';
+let currentBookingData = null; // Store data for review step
 
 // --- NAVIGATION ---
 
@@ -592,7 +593,7 @@ function calculateCost() {
     }
 }
 
-bookingForm.addEventListener('submit', async (e) => {
+bookingForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const start = get24HourTime(startHourInput.value, startAmPmInput.value);
@@ -647,11 +648,34 @@ bookingForm.addEventListener('submit', async (e) => {
     if (document.getElementById('projector').checked) bookingData.addOns.push('Projector');
     if (document.getElementById('speaker').checked) bookingData.addOns.push('Speaker');
 
+    // Show Review Step instead of submitting immediately
+    currentBookingData = bookingData;
+    showReviewStep(bookingData);
+});
+
+function showReviewStep(data) {
+    const reviewHtml = `
+        <p><strong>Name:</strong> ${data.name}</p>
+        <p><strong>Phone:</strong> ${data.phone}</p>
+        <p><strong>Email:</strong> ${data.email}</p>
+        <p><strong>Date:</strong> ${formatDateReadable(data.date)}</p>
+        <p><strong>Time:</strong> ${formatTime12(data.startTime)} - ${formatTime12(data.endTime)} (${data.duration} hrs)</p>
+        <p><strong>Mode:</strong> ${data.mode} ${data.mode === 'Study' ? `(${data.pax} Pax)` : ''}</p>
+        <p><strong>Add-ons:</strong> ${data.addOns.join(', ') || 'None'}</p>
+        <p><strong>Total Cost:</strong> ₱${data.cost}</p>
+    `;
+    document.getElementById('reviewDetails').innerHTML = reviewHtml;
+    showStep('step-review');
+}
+
+async function confirmBooking() {
+    if (!currentBookingData) return;
+
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(bookingData)
+            body: JSON.stringify(currentBookingData)
         });
 
         const result = await response.json();
@@ -660,12 +684,13 @@ bookingForm.addEventListener('submit', async (e) => {
             alert(result.error || "Booking failed.");
         } else {
             showConfirmation(result.booking);
+            currentBookingData = null; // Clear data
         }
     } catch (error) {
         console.error("Booking error:", error);
         alert("An error occurred.");
     }
-});
+}
 
 function showConfirmation(booking) {
     const details = document.getElementById('confirmationDetails');
@@ -715,7 +740,9 @@ if (initialPhoneForm) {
     initialPhoneForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const phone = document.getElementById('initialPhone').value;
-        lookupBookings(phone);
+        if (confirm(`Is this number correct: ${phone}?`)) {
+            lookupBookings(phone);
+        }
     });
 }
 

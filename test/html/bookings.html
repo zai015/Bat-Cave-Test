@@ -173,7 +173,19 @@
             </form>
         </div>
 
-        <!-- STEP 4: CONFIRMATION -->
+        <!-- STEP 4: REVIEW BOOKING -->
+        <div id="step-review" class="wizard-step" style="display:none;">
+            <h1>Review Your Booking</h1>
+            <div class="review-details" id="reviewDetails">
+                <!-- Details injected by JS -->
+            </div>
+            <div class="form-actions">
+                <button class="btn-secondary" onclick="showStep('step-booking-details')">Edit</button>
+                <button class="btn-primary" onclick="confirmBooking()">Confirm Booking</button>
+            </div>
+        </div>
+
+        <!-- STEP 5: CONFIRMATION -->
         <div id="step-confirmation" class="wizard-step" style="display:none;">
             <h1>Booking Confirmed!</h1>
             <div class="confirmation-details" id="confirmationDetails">
