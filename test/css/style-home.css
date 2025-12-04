@@ -646,7 +646,7 @@ section {
 }
 
 .gallery .box-container:hover {
-  transform: scale(1.01);
+  transform: scale(1.0);
 }
 
 .gallery .box-container img:hover {
