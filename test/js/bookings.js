@@ -124,7 +124,112 @@ function selectDate(dateStr, cellElement) {
 
     // Proceed to booking details
     document.getElementById('selectedDateDisplay').textContent = selectedDate;
+
+    // Update time options based on availability
+    updateStartTimeOptions();
+    // Reset form values to avoid invalid states
+    startHourInput.value = "";
+    startAmPmInput.value = "PM";
+    endHourInput.value = "";
+    endAmPmInput.value = "PM";
+
     showStep('step-booking-details');
+}
+
+function updateStartTimeOptions() {
+    const options = startHourInput.options;
+    const dayBookings = bookings.filter(b => b.date === selectedDate && b.status !== 'cancelled' && b.status !== 'rejected');
+
+    for (let i = 0; i < options.length; i++) {
+        const opt = options[i];
+        if (opt.disabled && opt.value === "") continue; // Skip placeholder
+
+        const h = parseInt(opt.value);
+        let amPm = 'PM';
+        if (h === 12) amPm = 'AM';
+
+        const timeStr = get24HourTime(opt.value, amPm); // e.g. "13:00"
+
+        // Check availability for this specific hour slot
+        // We simulate a 1-hour check: checkAvailability(date, start, end)
+        // But checkAvailability checks a range. We just need to know if this specific hour is blocked.
+        // Let's reuse checkAvailability logic but simplified or just call it for 1 hour duration.
+        // Actually, checkAvailability returns available pax.
+        // If available pax == 0, then it's full.
+
+        // Construct end time for 1 hour duration
+        let startH = parseInt(timeStr.split(':')[0]);
+        let endH = startH + 1;
+        // Handle 24h wrap if needed, but get24HourTime returns 00:00 for 12AM.
+        // 00:00 -> 01:00.
+
+        const endStr = `${String(endH).padStart(2, '0')}:00`;
+
+        // We need to pass the formatted strings to checkAvailability
+        // But wait, checkAvailability expects "HH:00".
+        // If startH is 23, endH is 24. checkAvailability normalizes.
+
+        const available = checkAvailability(selectedDate, timeStr, endStr);
+
+        if (available === 0) {
+            opt.disabled = true;
+            if (!opt.textContent.includes('(Full)')) {
+                opt.textContent += ' (Full)';
+            }
+        } else {
+            opt.disabled = false;
+            opt.textContent = opt.textContent.replace(' (Full)', '');
+        }
+    }
+}
+
+function updateEndTimeOptions() {
+    const startVal = startHourInput.value;
+    if (!startVal) return;
+
+    const startAmPm = startAmPmInput.value;
+    const startTime24 = get24HourTime(startVal, startAmPm);
+    let startH = parseInt(startTime24.split(':')[0]);
+    startH = normalizeHour(startH);
+
+    const options = endHourInput.options;
+
+    for (let i = 0; i < options.length; i++) {
+        const opt = options[i];
+        if (opt.value === "") continue;
+
+        const h = parseInt(opt.value);
+        let amPm = 'PM';
+        if (h === 12 || h === 1) amPm = 'AM';
+
+        const timeStr = get24HourTime(opt.value, amPm);
+        let optH = parseInt(timeStr.split(':')[0]);
+        optH = normalizeHour(optH);
+
+        if (optH <= startH) {
+            opt.disabled = true;
+        } else {
+            opt.disabled = false;
+        }
+    }
+
+    // If currently selected end time is now disabled, reset it
+    const currentEndVal = endHourInput.value;
+    if (currentEndVal) {
+        const currentEndH = parseInt(currentEndVal);
+        let currentEndAmPm = 'PM';
+        if (currentEndH === 12 || currentEndH === 1) currentEndAmPm = 'AM';
+        const currentEndTimeStr = get24HourTime(currentEndVal, currentEndAmPm);
+        let currentEndHNorm = parseInt(currentEndTimeStr.split(':')[0]);
+        currentEndHNorm = normalizeHour(currentEndHNorm);
+
+        if (currentEndHNorm <= startH) {
+            endHourInput.value = "";
+            endAmPmInput.value = "PM";
+            document.getElementById('durationDisplay').textContent = "0";
+            document.getElementById('totalCost').textContent = "0";
+        }
+    }
 }
 
 // --- BOOKING FORM LOGIC ---
@@ -218,6 +323,7 @@ startHourInput.addEventListener('change', () => {
     } else {
         startAmPmInput.value = 'PM';
     }
+    updateEndTimeOptions();
     calculateCost();
 });
 
