@@ -360,13 +360,13 @@ function calculateCost() {
 
     // Block if Event requested but not full room available
     if (mode === 'Event' && availablePax < 20) {
-        document.getElementById('totalCost').textContent = "Unavailable (Room not empty)";
+        document.getElementById('totalCost').textContent = "0.00";
         document.getElementById('durationDisplay').textContent = "-";
         return; // Stop calculation
     }
 
     if (availablePax === 0) {
-        document.getElementById('totalCost').textContent = "Unavailable";
+        document.getElementById('totalCost').textContent = "0.00";
         document.getElementById('durationDisplay').textContent = "-";
         return;
     }

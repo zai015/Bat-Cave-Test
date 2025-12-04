@@ -63,100 +63,107 @@
             <p>Selected Date: <span id="selectedDateDisplay"></span></p>
 
             <form id="bookingForm">
-                <div class="form-group">
-                    <label>Booking Mode</label>
-                    <select id="bookingMode" required>
-                        <option value="Study">Study Mode (₱50/hr/pax)</option>
-                        <option value="Event">Event Mode (₱1000/hr - Whole Room)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="fullName" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="tel" id="phone" required pattern="^[0-9]{10,11}$" placeholder="09XXXXXXXXX" readonly>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Start Time</label>
-                        <div class="time-select-group" style="display: flex; gap: 5px;">
-                            <select id="startHour" required style="flex: 1;">
-                                <option value="" disabled selected>Hour</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
+                <div class="form-grid">
+                    <div class="form-col-left">
+                        <div class="form-group">
+                            <label>Booking Mode</label>
+                            <select id="bookingMode" required>
+                                <option value="Study">Study Mode (₱50/hr/pax)</option>
+                                <option value="Event">Event Mode (₱1000/hr - Whole Room)</option>
                             </select>
-                            <input type="text" id="startAmPm" value="PM" style="width: 70px;" readonly>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>End Time</label>
-                        <div class="time-select-group" style="display: flex; gap: 5px;">
-                            <select id="endHour" required style="flex: 1;">
-                                <option value="" disabled selected>Hour</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-                                <option value="1">1</option>
-                            </select>
-                            <input type="text" id="endAmPm" value="PM" style="width: 70px;" readonly>
+
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="fullName" required>
                         </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="phone" required pattern="^[0-9]{10,11}$" placeholder="09XXXXXXXXX"
+                                readonly>
+                        </div>
+
+                    </div>
+                    <div class="form-col-right">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Start Time</label>
+                                <div class="time-select-group" style="display: flex; gap: 5px;">
+                                    <select id="startHour" required style="flex: 1;">
+                                        <option value="" disabled selected>Hour</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                    <input type="text" id="startAmPm" value="PM" style="width: 70px;" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>End Time</label>
+                                <div class="time-select-group" style="display: flex; gap: 5px;">
+                                    <select id="endHour" required style="flex: 1;">
+                                        <option value="" disabled selected>Hour</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="1">1</option>
+                                    </select>
+                                    <input type="text" id="endAmPm" value="PM" style="width: 70px;" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Duration: <span id="durationDisplay">0</span> hours</label>
+                        </div>
+
+                        <div class="form-group" id="paxGroup">
+                            <label>Number of Pax (Max 20) <span id="availabilityDisplay"
+                                    style="font-weight:bold; margin-left:10px;"></span></label>
+                            <input type="number" id="pax" min="1" max="20" value="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Equipment Add-Ons</label>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="projector">
+                                <label for="projector">Projector (₱150/hr)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="speaker">
+                                <label for="speaker">Speaker + Mic (₱150/hr)</label>
+                            </div>
+                        </div>
+
+                        <div class="cost-summary">
+                            <h3>Estimated Cost: ₱<span id="totalCost">0</span></h3>
+                        </div>
+
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label>Duration: <span id="durationDisplay">0</span> hours</label>
-                </div>
-
-                <div class="form-group" id="paxGroup">
-                    <label>Number of Pax (Max 20) <span id="availabilityDisplay"
-                            style="font-weight:bold; margin-left:10px;"></span></label>
-                    <input type="number" id="pax" min="1" max="20" value="1">
-                </div>
-
-                <div class="form-group">
-                    <label>Equipment Add-Ons</label>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="projector">
-                        <label for="projector">Projector (₱150/hr)</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="speaker">
-                        <label for="speaker">Speaker + Mic (₱150/hr)</label>
-                    </div>
-                </div>
-
-                <div class="cost-summary">
-                    <h3>Estimated Cost: ₱<span id="totalCost">0</span></h3>
-                </div>
-
                 <div class="form-actions">
                     <button type="button" class="btn-secondary" onclick="showCalendar()">Back</button>
                     <button type="submit" class="btn-primary">Book Now</button>
