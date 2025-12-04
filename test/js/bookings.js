@@ -138,7 +138,8 @@ function selectDate(dateStr, cellElement) {
 
 function updateStartTimeOptions() {
     const options = startHourInput.options;
-    const amPm = startAmPmInput.value;
+    // We no longer rely on startAmPmInput.value to filter options.
+    // Instead, we determine the implied AM/PM for each option.
 
     for (let i = 0; i < options.length; i++) {
         const opt = options[i];
@@ -146,26 +147,16 @@ function updateStartTimeOptions() {
 
         const h = parseInt(opt.value);
 
-        // Validate Operating Hours (1 PM - 12 AM Start)
-        // PM: 1-11 valid, 12 invalid (Noon)
-        // AM: 12 valid (Midnight), 1-11 invalid (Morning)
-        let isValidOpHour = false;
-        if (amPm === 'PM') {
-            if (h !== 12) isValidOpHour = true;
-        } else { // AM
-            if (h === 12) isValidOpHour = true;
-        }
+        // Determine implied AM/PM based on business hours (1 PM - 1 AM)
+        // 12 is 12 AM (00:00)
+        // 1-11 is PM
+        let impliedAmPm = 'PM';
+        if (h === 12) impliedAmPm = 'AM';
 
-        if (!isValidOpHour) {
-            opt.disabled = true;
-            opt.textContent = opt.value + " (Closed)";
-            continue;
-        } else {
-            // Reset text if it was marked closed
-            opt.textContent = opt.value;
-        }
+        // Reset text
+        opt.textContent = opt.value;
 
-        const timeStr = get24HourTime(opt.value, amPm);
+        const timeStr = get24HourTime(opt.value, impliedAmPm);
 
         // Construct end time for 1 hour duration check
         let startH = parseInt(timeStr.split(':')[0]);
@@ -190,13 +181,16 @@ function updateEndTimeOptions() {
     const startVal = startHourInput.value;
     if (!startVal) return;
 
-    const startAmPm = startAmPmInput.value;
+    // Determine start time 24h
+    // We need to know the correct AM/PM for the selected start hour
+    let startAmPm = 'PM';
+    if (parseInt(startVal) === 12) startAmPm = 'AM';
+
     const startTime24 = get24HourTime(startVal, startAmPm);
     let startH = parseInt(startTime24.split(':')[0]);
     startH = normalizeHour(startH);
 
     const options = endHourInput.options;
-    const endAmPm = endAmPmInput.value;
 
     for (let i = 0; i < options.length; i++) {
         const opt = options[i];
@@ -204,22 +198,13 @@ function updateEndTimeOptions() {
 
         const h = parseInt(opt.value);
 
-        // Validate Operating Hours (1 PM - 1 AM End)
-        // PM: 1-11 valid, 12 invalid
-        // AM: 12, 1 valid. 2-11 invalid.
-        let isValidOpHour = false;
-        if (endAmPm === 'PM') {
-            if (h !== 12) isValidOpHour = true;
-        } else { // AM
-            if (h === 12 || h === 1) isValidOpHour = true;
-        }
+        // Determine implied AM/PM for end time
+        // 12 and 1 are AM
+        // 2-11 are PM
+        let impliedAmPm = 'PM';
+        if (h === 12 || h === 1) impliedAmPm = 'AM';
 
-        if (!isValidOpHour) {
-            opt.disabled = true;
-            continue;
-        }
-
-        const timeStr = get24HourTime(opt.value, endAmPm);
+        const timeStr = get24HourTime(opt.value, impliedAmPm);
         let optH = parseInt(timeStr.split(':')[0]);
         optH = normalizeHour(optH);
 
@@ -233,14 +218,15 @@ function updateEndTimeOptions() {
     // If currently selected end time is now disabled, reset it
     const currentEndVal = endHourInput.value;
     if (currentEndVal) {
-        const currentEndH = parseInt(currentEndVal);
-        const currentEndTimeStr = get24HourTime(currentEndVal, endAmPm);
+        let currentEndAmPm = 'PM';
+        if (parseInt(currentEndVal) === 12 || parseInt(currentEndVal) === 1) currentEndAmPm = 'AM';
+
+        const currentEndTimeStr = get24HourTime(currentEndVal, currentEndAmPm);
         let currentEndHNorm = parseInt(currentEndTimeStr.split(':')[0]);
         currentEndHNorm = normalizeHour(currentEndHNorm);
 
         if (currentEndHNorm <= startH) {
             endHourInput.value = "";
-            // endAmPmInput.value = "PM"; // Don't reset AM/PM as user might be changing it
             document.getElementById('durationDisplay').textContent = "0";
             document.getElementById('totalCost').textContent = "0";
         }
@@ -330,12 +316,25 @@ function checkAvailability(date, startStr, endStr) {
 });
 
 // Special handler for End Hour to auto-set AM/PM (Removed to allow user control)
+// Special handler for End Hour to auto-set AM/PM
 endHourInput.addEventListener('change', () => {
+    const val = parseInt(endHourInput.value);
+    if (val === 12 || val === 1) {
+        endAmPmInput.value = 'AM';
+    } else {
+        endAmPmInput.value = 'PM';
+    }
     calculateCost();
 });
 
-// Special handler for Start Hour to auto-set AM/PM (Removed to allow user control)
+// Special handler for Start Hour to auto-set AM/PM
 startHourInput.addEventListener('change', () => {
+    const val = parseInt(startHourInput.value);
+    if (val === 12) {
+        startAmPmInput.value = 'AM';
+    } else {
+        startAmPmInput.value = 'PM';
+    }
     updateEndTimeOptions();
     calculateCost();
 });
