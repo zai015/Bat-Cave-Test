@@ -674,9 +674,8 @@ section {
 .lightbox-content {
   margin: auto;
   display: block;
-  width: auto;
-  max-width: 90%;
-  max-height: 90vh;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   animation: zoomIn 0.3s;
   border-radius: 8px;
