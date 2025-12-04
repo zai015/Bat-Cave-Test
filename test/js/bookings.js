@@ -1,6 +1,6 @@
 const API_URL = '../php/booking_handler.php';
 
-let currentStep = 'step-user-type';
+let currentStep = 'step-initial-phone';
 let selectedDate = null;
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
@@ -19,12 +19,10 @@ function showCalendar() {
     fetchBookingsAndRenderCalendar();
 }
 
-function showReturningUser() {
-    showStep('step-returning-lookup');
-}
+
 
 function resetToHome() {
-    showStep('step-user-type');
+    showStep('step-initial-phone');
     document.getElementById('bookingForm').reset();
     selectedDate = null;
 }
@@ -388,8 +386,7 @@ function showConfirmation(booking) {
 
 // --- RETURNING USER LOGIC ---
 
-async function lookupBookings() {
-    const phone = document.getElementById('lookupPhone').value;
+async function lookupBookings(phone) {
     if (!phone) {
         alert("Please enter a phone number.");
         return;
@@ -399,12 +396,29 @@ async function lookupBookings() {
         const response = await fetch(`${API_URL}?phone=${phone}`);
         const userBookings = await response.json();
 
-        renderBookingsList(userBookings);
-        showStep('step-returning-list');
+        if (userBookings.length > 0) {
+            renderBookingsList(userBookings);
+            showStep('step-returning-list');
+        } else {
+            // No bookings, go to calendar
+            // Pre-fill phone number in booking form
+            document.getElementById('phone').value = phone;
+            showCalendar();
+        }
     } catch (error) {
         console.error("Lookup error:", error);
         alert("Failed to find bookings.");
     }
+}
+
+// --- INITIAL PHONE FORM LOGIC ---
+const initialPhoneForm = document.getElementById('initialPhoneForm');
+if (initialPhoneForm) {
+    initialPhoneForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const phone = document.getElementById('initialPhone').value;
+        lookupBookings(phone);
+    });
 }
 
 function renderBookingsList(bookingsList) {

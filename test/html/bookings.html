@@ -24,14 +24,18 @@
 
     <div class="container">
 
-        <!-- STEP 1: USER TYPE SELECTION -->
-        <div id="step-user-type" class="wizard-step">
+        <!-- STEP 1: INITIAL PHONE CHECK -->
+        <div id="step-initial-phone" class="wizard-step">
             <h1>Welcome to Bat Cave</h1>
-            <p>Please select an option to proceed:</p>
-            <div class="user-options">
-                <button class="btn-large" onclick="showCalendar()">New User / New Booking</button>
-                <button class="btn-large" onclick="showReturningUser()">Returning User</button>
-            </div>
+            <p>Please enter your phone number to continue:</p>
+            <form id="initialPhoneForm">
+                <div class="form-group">
+                    <input type="tel" id="initialPhone" placeholder="09XXXXXXXXX" required pattern="^[0-9]{10,11}$">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Proceed</button>
+                </div>
+            </form>
         </div>
 
         <!-- STEP 2: CALENDAR VIEW (New User) -->
@@ -170,19 +174,6 @@
             <button class="btn-primary" onclick="resetToHome()">Back to Home</button>
         </div>
 
-        <!-- STEP 5: RETURNING USER LOOKUP -->
-        <div id="step-returning-lookup" class="wizard-step" style="display:none;">
-            <h1>View Your Bookings</h1>
-            <div class="form-group">
-                <label>Enter Phone Number</label>
-                <input type="tel" id="lookupPhone" placeholder="09XXXXXXXXX">
-            </div>
-            <div class="form-actions">
-                <button class="btn-secondary" onclick="resetToHome()">Back</button>
-                <button class="btn-primary" onclick="lookupBookings()">View Bookings</button>
-            </div>
-        </div>
-
         <!-- STEP 6: BOOKING LIST -->
         <div id="step-returning-list" class="wizard-step" style="display:none;">
             <h1>Your Active Bookings</h1>
@@ -190,7 +181,7 @@
                 <!-- List injected by JS -->
             </div>
             <div class="form-actions">
-                <button class="btn-secondary" onclick="showReturningUser()">Back</button>
+                <button class="btn-secondary" onclick="resetToHome()">Back</button>
                 <button class="btn-primary" onclick="showCalendar()">Book Another Room</button>
             </div>
         </div>
