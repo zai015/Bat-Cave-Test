@@ -5,6 +5,7 @@ let selectedDate = null;
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 let bookings = [];
+let userPhone = '';
 
 // --- NAVIGATION ---
 
@@ -392,6 +393,9 @@ async function lookupBookings(phone) {
         return;
     }
 
+    userPhone = phone;
+    document.getElementById('phone').value = userPhone;
+
     try {
         const response = await fetch(`${API_URL}?phone=${phone}`);
         const userBookings = await response.json();
@@ -401,8 +405,6 @@ async function lookupBookings(phone) {
             showStep('step-returning-list');
         } else {
             // No bookings, go to calendar
-            // Pre-fill phone number in booking form
-            document.getElementById('phone').value = phone;
             showCalendar();
         }
     } catch (error) {
