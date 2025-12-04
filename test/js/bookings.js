@@ -142,14 +142,27 @@ const paxInput = document.getElementById('pax');
 function get24HourTime(hourStr, amPm) {
     if (!hourStr) return null;
     let hour = parseInt(hourStr);
-    if (amPm === 'PM' && hour < 12) hour += 12;
-    if (amPm === 'AM' && hour === 12) hour = 0;
+    // 12 PM is treated as Midnight (00:00) in this app
+    if (amPm === 'PM' && hour === 12) hour = 0;
+    else if (amPm === 'PM' && hour < 12) hour += 12;
+    else if (amPm === 'AM' && hour === 12) hour = 0;
     return `${String(hour).padStart(2, '0')}:00`;
 }
 
 // Auto-calculate duration and cost
-[startHourInput, startAmPmInput, endHourInput, endAmPmInput, bookingModeInput, paxInput, document.getElementById('projector'), document.getElementById('speaker')].forEach(el => {
+[startHourInput, startAmPmInput, bookingModeInput, paxInput, document.getElementById('projector'), document.getElementById('speaker')].forEach(el => {
     el.addEventListener('change', calculateCost);
+});
+
+// Special handler for End Hour to auto-set AM/PM
+endHourInput.addEventListener('change', () => {
+    const h = parseInt(endHourInput.value);
+    if (h === 12 || h === 1) {
+        endAmPmInput.value = 'AM';
+    } else {
+        endAmPmInput.value = 'PM';
+    }
+    calculateCost();
 });
 
 function calculateCost() {
