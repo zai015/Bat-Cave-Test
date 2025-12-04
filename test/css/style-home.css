@@ -558,14 +558,13 @@ section {
 
 /*  START OF MENU SECTION   */
 .menu .box-container {
-  display: inline-grid;
+  display: grid;
   padding: 0;
-  margin: 0;
-  grid-template-columns: repeat(auto-fit, minmax(0rem, 1fr));
-  gap: 0rem;
-  align-items: flex-start;
+  margin: 0 auto;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 2rem;
   justify-content: center;
-  padding-left: 28%;
+  max-width: 1200px;
 }
 
 .menu .box-container .box {

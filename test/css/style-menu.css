@@ -31,15 +31,18 @@ body::before {
   inset: 0;
   background:
     radial-gradient(1200px 600px at 10% 10%, rgba(255, 255, 255, 0.02), transparent 10%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(0, 0, 0, 0));
+    pointer-events: none;
+    z-index: 0;
 }
 
 /* NAV */
 .nav {
   position: sticky;
   top: 0;
-  background: #090909;
+  background: #000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-  z-index: 1000;
+  z-index: 50;
 }
 
 .nav-inner {
@@ -70,8 +73,7 @@ body::before {
   text-decoration: none;
   font-size: 18px;
   opacity: 0.95;
-  font-family: 'Inter', sans-serif;
-  transition: color 0.3s ease;
+
 }
 
 .nav-links a.active,
