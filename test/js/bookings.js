@@ -169,7 +169,7 @@ function selectDate(dateStr, cellElement) {
     selectedDate = dateStr;
 
     // Proceed to booking details
-    document.getElementById('selectedDateDisplay').textContent = selectedDate;
+    document.getElementById('selectedDateDisplay').textContent = formatDateReadable(selectedDate);
 
     // Update time options based on availability
     updateStartTimeOptions();
@@ -378,6 +378,14 @@ function formatTime12(time24) {
     const amPm = hour >= 12 ? 'PM' : 'AM';
     hour = hour % 12 || 12;
     return `${hour}:${minute} ${amPm}`;
+}
+
+function formatDateReadable(dateStr) {
+    if (!dateStr) return '';
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
 }
 
 function normalizeHour(hour) {
@@ -665,7 +673,7 @@ function showConfirmation(booking) {
         <p><strong>Booking ID:</strong> ${booking.id}</p>
         <p><strong>Status:</strong> <span style="color:orange">Pending Approval</span></p>
         <p><strong>Name:</strong> ${booking.contact.name}</p>
-        <p><strong>Date:</strong> ${booking.date}</p>
+        <p><strong>Date:</strong> ${formatDateReadable(booking.date)}</p>
         <p><strong>Time:</strong> ${formatTime12(booking.startTime)} - ${formatTime12(booking.endTime)} (${booking.duration} hrs)</p>
         <p><strong>Mode:</strong> ${booking.mode} ${booking.mode === 'Study' ? `(${booking.pax} Pax)` : ''}</p>
         <p><strong>Total Cost:</strong> ₱${booking.cost}</p>
@@ -736,7 +744,7 @@ function renderBookingsList(bookingsList) {
         if (b.status === 'rejected') statusColor = '#f44336';
 
         card.innerHTML = `
-            <h3>${b.date} | ${formatTime12(b.startTime)} - ${formatTime12(b.endTime)}</h3>
+            <h3>${formatDateReadable(b.date)} | ${formatTime12(b.startTime)} - ${formatTime12(b.endTime)}</h3>
             <p><strong>Mode:</strong> ${b.mode}</p>
             ${b.mode === 'Study' ? `<p><strong>Pax:</strong> ${b.pax}</p>` : ''}
             <p><strong>Cost:</strong> ₱${b.cost}</p>
