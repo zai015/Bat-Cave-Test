@@ -209,16 +209,18 @@ function updateStartTimeOptions() {
         let endH = startH + 1;
         const endStr = `${String(endH).padStart(2, '0')}:00`;
 
-        const available = checkAvailability(selectedDate, timeStr, endStr);
+        const availability = checkAvailability(selectedDate, timeStr, endStr);
 
-        if (available === 0) {
+        if (availability.seats === 0) {
             opt.disabled = true;
             if (!opt.textContent.includes('(Full)')) {
                 opt.textContent += ' (Full)';
             }
+            opt.title = availability.reason || "Unavailable";
         } else {
             opt.disabled = false;
             opt.textContent = opt.textContent.replace(' (Full)', '');
+            opt.title = "";
         }
     }
 }
@@ -316,7 +318,7 @@ function normalizeHour(hour) {
 }
 
 function checkAvailability(date, startStr, endStr) {
-    if (!date || !startStr || !endStr) return 20;
+    if (!date || !startStr || !endStr) return { seats: 20, reason: null };
 
     let startH = parseInt(startStr.split(':')[0]);
     let endH = parseInt(endStr.split(':')[0]);
@@ -328,6 +330,7 @@ function checkAvailability(date, startStr, endStr) {
     const dayBookings = bookings.filter(b => b.date === date && b.status !== 'cancelled' && b.status !== 'rejected');
 
     let maxOccupancy = 0;
+    let conflictReason = null;
 
     // Check each hour in the requested range
     for (let h = startH; h < endH; h++) {
@@ -343,7 +346,7 @@ function checkAvailability(date, startStr, endStr) {
             // Check overlap: if the hour 'h' is within the booking's range [bStart, bEnd)
             if (h >= bStart && h < bEnd) {
                 if (b.mode === 'Event') {
-                    return 0; // Event blocks everything
+                    return { seats: 0, reason: "Event scheduled during this time" }; // Event blocks everything
                 }
                 currentOccupancy += parseInt(b.pax || 0);
             }
@@ -353,7 +356,12 @@ function checkAvailability(date, startStr, endStr) {
         }
     }
 
-    return Math.max(0, 20 - maxOccupancy);
+    const remaining = Math.max(0, 20 - maxOccupancy);
+    if (remaining === 0) {
+        return { seats: 0, reason: "Fully booked" };
+    }
+
+    return { seats: remaining, reason: null };
 }
 
 // Auto-calculate duration and cost
@@ -409,9 +417,10 @@ function calculateCost() {
     const durationDisplay = document.getElementById('durationDisplay');
 
     // Helper to show error
-    function showUnavailable() {
+    function showUnavailable(reason) {
         costDisplay.style.display = 'none';
         costError.style.display = 'block';
+        costError.textContent = reason || "Selected time is unavailable";
         durationDisplay.textContent = "-";
         totalCostSpan.textContent = "0.00";
     }
@@ -430,7 +439,8 @@ function calculateCost() {
     }
 
     // Check Availability
-    const availablePax = checkAvailability(selectedDate, start, end);
+    const availability = checkAvailability(selectedDate, start, end);
+    const availablePax = availability.seats;
 
     // Update UI for availability
     const availDisplay = document.getElementById('availabilityDisplay');
@@ -449,12 +459,16 @@ function calculateCost() {
 
     // Block if Event requested but not full room available
     if (mode === 'Event' && availablePax < 20) {
-        showUnavailable();
+        let reason = availability.reason;
+        if (!reason) {
+            reason = `Room not fully available (Only ${availablePax} seats free)`;
+        }
+        showUnavailable(reason);
         return; // Stop calculation
     }
 
     if (availablePax === 0) {
-        showUnavailable();
+        showUnavailable(availability.reason);
         return;
     }
 
@@ -504,17 +518,19 @@ bookingForm.addEventListener('submit', async (e) => {
     const mode = bookingModeInput.value;
 
     // Final Validation
-    const availablePax = checkAvailability(selectedDate, start, end);
+    const availability = checkAvailability(selectedDate, start, end);
+    const availablePax = availability.seats;
 
     if (mode === 'Event' && availablePax < 20) {
-        alert("Cannot book Event: The room is not fully available for the selected time.");
+        let reason = availability.reason || `Room not fully available (Only ${availablePax} seats free)`;
+        alert(`Cannot book Event: ${reason}`);
         return;
     }
 
     if (mode === 'Study') {
         const requestedPax = parseInt(paxInput.value);
         if (requestedPax > availablePax) {
-            alert(`Only ${availablePax} seats available for this time.`);
+            alert(`Only ${availablePax} seats available for this time. ${availability.reason || ''}`);
             return;
         }
     }
