@@ -88,6 +88,12 @@ body {
     color: var(--accent-primary);
 }
 
+.admin-logo {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+}
+
 /* SIDEBAR NAV */
 .admin-nav {
     grid-row: 2 / -1;
