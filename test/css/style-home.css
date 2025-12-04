@@ -197,7 +197,6 @@ header {
   width: 100%;
   background-color: var(--bg-primary);
   z-index: 1000;
-  border-bottom: 1px solid rgba(160, 160, 160, 0.27);
 }
 
 /* LOGO */
@@ -567,10 +566,10 @@ header {
   padding: 0;
   margin: 0;
   grid-template-columns: repeat(auto-fit, minmax(0rem, 1fr));
-  gap: 0rem;
+  gap: 1.5rem;
   align-items: flex-start;
   justify-content: center;
-  padding-left: 28%;
+  padding-left: 35rem;
 }
 
 .menu .box-container .box {
@@ -621,10 +620,17 @@ header {
 
 /*   END OF MENU SECTION   */
 
-/*  START OF GALLERY SECTION */
+/* Gallery heading */
 #gallery-heading {
   font-family: var(--font-heading);
   font-size: 4rem;
+  text-align: center;
+}
+
+/* Gallery grid */
+.gallery {
+  display: flex;
+  flex-direction: column;
   text-align: center;
 }
 
@@ -633,29 +639,74 @@ header {
   grid-template-columns: repeat(auto-fit, minmax(20rem, 26rem));
   gap: 0.5rem;
   justify-content: center;
-  transition: transform 0.3s ease;
-}
-
-.gallery {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
 }
 
 .gallery .box-container img {
-  height: auto;
   width: 100%;
+  height: auto;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  cursor: pointer;
 }
 
-.gallery .box-container:hover {
-  transform: scale(1.01);
-}
-
+/* Hover effect */
 .gallery .box-container img:hover {
   filter: brightness(0.7);
+  transform: scale(1.03);
 }
+/* Lightbox overlay */
+#lightbox {
+  display: flex; /* keep flex for centering */
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0); /* start transparent */
+  opacity: 0;
+  pointer-events: none; /* prevent clicks when hidden */
+  z-index: 1000;
+  flex-direction: column;
+  transition: background 0.5s ease, opacity 0.5s ease;
+}
+
+/* Lightbox visible state */
+#lightbox.show {
+  background: rgba(0,0,0,0.9);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Lightbox image */
+#lightbox img.lightbox-img {
+  max-width: 90%;
+  max-height: 90%;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  border-radius: 5px;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+/* Image visible when show class is added */
+#lightbox.show img.lightbox-img {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Close button */
+#lightbox .close {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  color: #fff;
+  font-size: 40px;
+  cursor: pointer;
+  user-select: none;
+}
+
 /*  END OF GALLERY SECTION  */
 
 /*  START OF FOOTER  */

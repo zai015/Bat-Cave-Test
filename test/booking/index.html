@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Booking | Bat Cave Café</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<script defer src="script.js"></script>
+</head>
+
+<body class="bg-dark text-light">
+
+<nav class="navbar navbar-dark bg-black px-4">
+    <a href="../index.html" class="navbar-brand">☕ Bat Cave Café</a>
+    <a href="view-bookings.html" class="btn btn-outline-light">Returning User</a>
+</nav>
+
+<section class="container py-5">
+    <h1 class="fw-bold mb-2">Room Reservation</h1>
+    <p class="text-muted">Choose a date to begin booking.</p>
+
+    <div id="calendar" class="calendar-container mt-4"></div>
+
+    <div class="text-center mt-4">
+        <small class="me-3"><span class="legend green"></span> Available</small>
+        <small class="me-3"><span class="legend yellow"></span> Partially Booked</small>
+        <small><span class="legend red"></span> Fully Booked</small>
+    </div>
+</section>
+
+</body>
+</html>
