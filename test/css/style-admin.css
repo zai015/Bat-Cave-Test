@@ -1,9 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&family=Montserrat:wght@400;500;600&display=swap');
 
 :root {
     /* Fonts */
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Poppins', sans-serif;
+    --font-body-alt: 'Inter', sans-serif;
 
     /* Backgrounds */
     --bg-primary: #090909;
@@ -14,14 +15,24 @@
     /* Text colors */
     --text-primary: #ffffff;
     --text-secondary: #a0a0a0;
+    --text-highlight: #a7ffeb;
 
     /* Accents */
     --accent-primary: #14b89c;
     /* Mint */
+    --accent-secondary: #8b5e3c;
+    /* Bronze */
     --accent-hover: #0e8c75;
 
     /* Borders */
     --border-light: rgba(255, 255, 255, 0.06);
+    --border-accent: #8b5e3c;
+
+    /* Status Colors */
+    --status-success: #4caf50;
+    --status-warning: #ffeb3b;
+    --status-danger: #f44336;
+    --status-info: #2196f3;
 }
 
 * {
@@ -383,4 +394,133 @@ body {
     margin-bottom: 20px;
     font-size: 0.9rem;
     display: none;
+}
+
+/* DASHBOARD STYLES */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.date-display {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    font-family: var(--font-body-alt);
+}
+
+/* KPI GRID */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.kpi-card {
+    background: var(--bg-panel);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.kpi-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+/* KPI Icon Variants */
+.icon-sales {
+    background: rgba(20, 184, 156, 0.1);
+    color: var(--accent-primary);
+}
+
+.icon-orders {
+    background: rgba(255, 152, 0, 0.1);
+    color: #ff9800;
+}
+
+.icon-customers {
+    background: rgba(33, 150, 243, 0.1);
+    color: #2196f3;
+}
+
+.icon-pending {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+}
+
+.kpi-info h3 {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+    font-weight: 400;
+}
+
+.kpi-value {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    margin-bottom: 5px;
+}
+
+.kpi-trend {
+    font-size: 0.8rem;
+    display: block;
+}
+
+.kpi-trend.positive {
+    color: var(--status-success);
+}
+
+.kpi-trend.negative {
+    color: var(--status-danger);
+}
+
+.kpi-trend.neutral {
+    color: var(--text-secondary);
+}
+
+/* CHARTS GRID */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.chart-container {
+    background: var(--bg-panel);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+}
+
+.chart-container h3 {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    font-family: var(--font-heading);
+}
+
+@media (max-width: 1024px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
 }

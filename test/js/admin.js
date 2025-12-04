@@ -128,6 +128,14 @@ async function fetchBookings() {
     try {
         const response = await fetch(API_URL);
         const bookings = await response.json();
+
+        // Update Pending Count KPI
+        const pendingCount = bookings.filter(b => b.status === 'pending').length;
+        const pendingEl = document.getElementById('pendingCount');
+        if (pendingEl) {
+            pendingEl.textContent = pendingCount;
+        }
+
         renderTable(bookings);
     } catch (error) {
         console.error('Error fetching bookings:', error);
