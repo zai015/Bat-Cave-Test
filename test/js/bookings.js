@@ -142,10 +142,9 @@ const paxInput = document.getElementById('pax');
 function get24HourTime(hourStr, amPm) {
     if (!hourStr) return null;
     let hour = parseInt(hourStr);
-    // 12 PM is treated as Midnight (00:00) in this app
-    if (amPm === 'PM' && hour === 12) hour = 0;
-    else if (amPm === 'PM' && hour < 12) hour += 12;
-    else if (amPm === 'AM' && hour === 12) hour = 0;
+    // Standard 12-hour to 24-hour conversion
+    if (amPm === 'PM' && hour < 12) hour += 12;
+    if (amPm === 'AM' && hour === 12) hour = 0;
     return `${String(hour).padStart(2, '0')}:00`;
 }
 
@@ -161,6 +160,17 @@ endHourInput.addEventListener('change', () => {
         endAmPmInput.value = 'AM';
     } else {
         endAmPmInput.value = 'PM';
+    }
+    calculateCost();
+});
+
+// Special handler for Start Hour to auto-set AM/PM
+startHourInput.addEventListener('change', () => {
+    const h = parseInt(startHourInput.value);
+    if (h === 12) {
+        startAmPmInput.value = 'AM';
+    } else {
+        startAmPmInput.value = 'PM';
     }
     calculateCost();
 });
