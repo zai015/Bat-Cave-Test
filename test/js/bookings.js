@@ -239,6 +239,10 @@ function updateEndTimeOptions() {
     startH = normalizeHour(startH);
 
     const options = endHourInput.options;
+    const mode = bookingModeInput.value;
+
+    // Find the next unavailable hour to set as the limit
+    const limitH = getNextUnavailableHour(startH, mode);
 
     for (let i = 0; i < options.length; i++) {
         const opt = options[i];
@@ -258,8 +262,13 @@ function updateEndTimeOptions() {
 
         if (optH <= startH) {
             opt.disabled = true;
+            opt.textContent = opt.value; // Reset text
+        } else if (optH > limitH) {
+            opt.disabled = true;
+            opt.textContent = `${opt.value} (Conflict)`;
         } else {
             opt.disabled = false;
+            opt.textContent = opt.value;
         }
     }
 
@@ -273,12 +282,72 @@ function updateEndTimeOptions() {
         let currentEndHNorm = parseInt(currentEndTimeStr.split(':')[0]);
         currentEndHNorm = normalizeHour(currentEndHNorm);
 
-        if (currentEndHNorm <= startH) {
-            endHourInput.value = "";
-            document.getElementById('durationDisplay').textContent = "0";
-            document.getElementById('totalCost').textContent = "0";
+        if (currentEndHNorm <= startH || (options.namedItem && options.namedItem(currentEndVal).disabled)) {
+            // Also check if the specific option is disabled (covers the new limit logic)
+            // But options collection access by value might be tricky, let's rely on the loop above or re-check
+            // Simpler: iterate options again or check if the value is valid
+            let isValid = false;
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].value === currentEndVal && !options[i].disabled) {
+                    isValid = true;
+                    break;
+                }
+            }
+
+            if (!isValid) {
+                endHourInput.value = "";
+                document.getElementById('durationDisplay').textContent = "0";
+                document.getElementById('totalCost').textContent = "0";
+            }
         }
     }
+}
+
+function getNextUnavailableHour(startH, mode) {
+    // Check hours from startH onwards to find the first one that is blocked
+    // startH is normalized (13-24)
+    // We check up to 25 (1 AM)
+
+    // Filter bookings for the same date
+    const dayBookings = bookings.filter(b => b.date === selectedDate && b.status !== 'cancelled' && b.status !== 'rejected');
+
+    for (let h = startH; h < 25; h++) {
+        // Check capacity for hour h
+        let currentOccupancy = 0;
+        let isEvent = false;
+
+        for (const b of dayBookings) {
+            let bStart = parseInt(b.startTime.split(':')[0]);
+            let bEnd = parseInt(b.endTime.split(':')[0]);
+
+            bStart = normalizeHour(bStart);
+            bEnd = normalizeHour(bEnd);
+
+            if (h >= bStart && h < bEnd) {
+                if (b.mode === 'Event') {
+                    isEvent = true;
+                }
+                currentOccupancy += parseInt(b.pax || 0);
+            }
+        }
+
+        // Determine if this hour is unavailable based on mode
+        if (mode === 'Event') {
+            // Event needs full room (20 seats)
+            // If any occupancy exists (even 1 pax), it's unavailable for Event
+            if (currentOccupancy > 0 || isEvent) {
+                return h;
+            }
+        } else {
+            // Study needs at least 1 seat
+            // If occupancy is 20 or Event exists, it's unavailable
+            if (currentOccupancy >= 20 || isEvent) {
+                return h;
+            }
+        }
+    }
+
+    return 25; // No blockage found up to closing
 }
 
 // --- BOOKING FORM LOGIC ---
@@ -365,8 +434,13 @@ function checkAvailability(date, startStr, endStr) {
 }
 
 // Auto-calculate duration and cost
-[startHourInput, startAmPmInput, bookingModeInput, paxInput, document.getElementById('projector'), document.getElementById('speaker')].forEach(el => {
+[startHourInput, startAmPmInput, paxInput, document.getElementById('projector'), document.getElementById('speaker')].forEach(el => {
     el.addEventListener('change', calculateCost);
+});
+
+bookingModeInput.addEventListener('change', () => {
+    updateEndTimeOptions(); // Mode affects end time limits
+    calculateCost();
 });
 
 // Special handler for End Hour to auto-set AM/PM (Removed to allow user control)
