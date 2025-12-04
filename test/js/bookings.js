@@ -333,6 +333,25 @@ function calculateCost() {
     const mode = bookingModeInput.value;
     const requestedPax = parseInt(paxInput.value) || 1;
 
+    const costDisplay = document.getElementById('costDisplay');
+    const costError = document.getElementById('costError');
+    const totalCostSpan = document.getElementById('totalCost');
+    const durationDisplay = document.getElementById('durationDisplay');
+
+    // Helper to show error
+    function showUnavailable() {
+        costDisplay.style.display = 'none';
+        costError.style.display = 'block';
+        durationDisplay.textContent = "-";
+        totalCostSpan.textContent = "0.00";
+    }
+
+    // Helper to show cost
+    function showCost() {
+        costDisplay.style.display = 'block';
+        costError.style.display = 'none';
+    }
+
     // Toggle Pax input visibility
     if (mode === 'Event') {
         document.getElementById('paxGroup').style.display = 'none';
@@ -360,14 +379,12 @@ function calculateCost() {
 
     // Block if Event requested but not full room available
     if (mode === 'Event' && availablePax < 20) {
-        document.getElementById('totalCost').textContent = "0.00";
-        document.getElementById('durationDisplay').textContent = "-";
+        showUnavailable();
         return; // Stop calculation
     }
 
     if (availablePax === 0) {
-        document.getElementById('totalCost').textContent = "0.00";
-        document.getElementById('durationDisplay').textContent = "-";
+        showUnavailable();
         return;
     }
 
@@ -382,12 +399,13 @@ function calculateCost() {
         let diff = endHour - startHour;
 
         if (diff <= 0) {
-            document.getElementById('durationDisplay').textContent = "Invalid";
-            document.getElementById('totalCost').textContent = "0";
+            durationDisplay.textContent = "Invalid";
+            totalCostSpan.textContent = "0";
+            showCost(); // Keep cost visible but 0
             return;
         }
 
-        document.getElementById('durationDisplay').textContent = diff.toFixed(1);
+        durationDisplay.textContent = diff.toFixed(1);
 
         let cost = 0;
         if (mode === 'Study') {
@@ -400,7 +418,11 @@ function calculateCost() {
         if (document.getElementById('projector').checked) cost += 150 * diff;
         if (document.getElementById('speaker').checked) cost += 150 * diff;
 
-        document.getElementById('totalCost').textContent = cost.toFixed(2);
+        totalCostSpan.textContent = cost.toFixed(2);
+        showCost();
+    } else {
+        // Incomplete input
+        showCost();
     }
 }
 
