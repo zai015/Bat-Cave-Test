@@ -560,6 +560,13 @@ function renderBookingsList(bookingsList) {
         return;
     }
 
+    // Sort by date and time (Newest/Latest first)
+    bookingsList.sort((a, b) => {
+        const dateA = new Date(`${a.date} ${a.startTime}`);
+        const dateB = new Date(`${b.date} ${b.startTime}`);
+        return dateB - dateA;
+    });
+
     bookingsList.forEach(b => {
         const card = document.createElement('div');
         card.className = 'booking-card';
