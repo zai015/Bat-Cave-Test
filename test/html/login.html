@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Bat Cave</title>
+    <link rel="stylesheet" href="../css/style-admin.css">
+</head>
+
+<body>
+    <div class="login-wrapper">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Admin Access</h1>
+                <p id="loginSubtext">Please login to continue</p>
+            </div>
+
+            <div id="errorMsg" class="error-msg"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username" style="text-align: left;">Username</label>
+                    <input type="text" id="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" style="text-align: left;">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/login.js"></script>
+</body>
+
+</html>

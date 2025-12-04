@@ -2,8 +2,17 @@ const API_URL = '../php/booking_handler.php';
 const MENU_API_URL = '../php/menu_handler.php';
 
 document.addEventListener('DOMContentLoaded', () => {
+    checkAuth();
+    document.getElementById('menuModal').style.display = 'none';
+
     fetchBookings();
     fetchMenu();
+
+    // Logout Button
+    const logoutBtn = document.querySelector('.logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', logout);
+    }
 
     // Simple tab switching
     document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -19,6 +28,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Menu Form Submit
     document.getElementById('menuForm').addEventListener('submit', saveMenuItem);
 });
+
+function checkAuth() {
+    const isAuth = localStorage.getItem('batCaveAdminAuth');
+    if (!isAuth) {
+        window.location.href = 'login.html';
+    }
+}
+
+function logout() {
+    localStorage.removeItem('batCaveAdminAuth');
+    localStorage.removeItem('batCaveAdminUser');
+    window.location.href = 'login.html';
+}
 
 // --- Bookings Logic ---
 async function fetchBookings() {
