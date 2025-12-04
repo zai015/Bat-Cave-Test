@@ -126,3 +126,38 @@ function renderPopularMenu(items) {
     container.appendChild(div);
   });
 }
+
+/* ======================================================= */
+/*                 GALLERY LIGHTBOX HANDLER                */
+/* ======================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const closeBtn = document.querySelector('.lightbox .close');
+  const galleryImages = document.querySelectorAll('.gallery .box-container img');
+
+  if (lightbox && lightboxImg && galleryImages.length > 0) {
+    // Open lightbox
+    galleryImages.forEach(img => {
+      img.addEventListener('click', () => {
+        lightbox.style.display = 'flex';
+        lightboxImg.src = img.src;
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+      });
+    });
+
+    // Close on button click
+    closeBtn.addEventListener('click', () => {
+      lightbox.style.display = 'none';
+      document.body.style.overflow = 'auto'; // Restore scrolling
+    });
+
+    // Close on background click
+    lightbox.addEventListener('click', (e) => {
+      if (e.target !== lightboxImg) {
+        lightbox.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restore scrolling
+      }
+    });
+  }
+});
