@@ -148,6 +148,53 @@ function get24HourTime(hourStr, amPm) {
     return `${String(hour).padStart(2, '0')}:00`;
 }
 
+function normalizeHour(hour) {
+    // Normalize hours to 13-25 range for easier comparison (1PM to 1AM next day)
+    if (hour < 13) return hour + 24;
+    return hour;
+}
+
+function checkAvailability(date, startStr, endStr) {
+    if (!date || !startStr || !endStr) return 20;
+
+    let startH = parseInt(startStr.split(':')[0]);
+    let endH = parseInt(endStr.split(':')[0]);
+
+    startH = normalizeHour(startH);
+    endH = normalizeHour(endH);
+
+    // Filter bookings for the same date
+    const dayBookings = bookings.filter(b => b.date === date && b.status !== 'cancelled' && b.status !== 'rejected');
+
+    let maxOccupancy = 0;
+
+    // Check each hour in the requested range
+    for (let h = startH; h < endH; h++) {
+        let currentOccupancy = 0;
+
+        for (const b of dayBookings) {
+            let bStart = parseInt(b.startTime.split(':')[0]);
+            let bEnd = parseInt(b.endTime.split(':')[0]);
+
+            bStart = normalizeHour(bStart);
+            bEnd = normalizeHour(bEnd);
+
+            // Check overlap: if the hour 'h' is within the booking's range [bStart, bEnd)
+            if (h >= bStart && h < bEnd) {
+                if (b.mode === 'Event') {
+                    return 0; // Event blocks everything
+                }
+                currentOccupancy += parseInt(b.pax || 0);
+            }
+        }
+        if (currentOccupancy > maxOccupancy) {
+            maxOccupancy = currentOccupancy;
+        }
+    }
+
+    return Math.max(0, 20 - maxOccupancy);
+}
+
 // Auto-calculate duration and cost
 [startHourInput, startAmPmInput, bookingModeInput, paxInput, document.getElementById('projector'), document.getElementById('speaker')].forEach(el => {
     el.addEventListener('change', calculateCost);
@@ -179,7 +226,7 @@ function calculateCost() {
     const start = get24HourTime(startHourInput.value, startAmPmInput.value);
     const end = get24HourTime(endHourInput.value, endAmPmInput.value);
     const mode = bookingModeInput.value;
-    const pax = parseInt(paxInput.value) || 1;
+    const requestedPax = parseInt(paxInput.value) || 1;
 
     // Toggle Pax input visibility
     if (mode === 'Event') {
@@ -188,15 +235,44 @@ function calculateCost() {
         document.getElementById('paxGroup').style.display = 'block';
     }
 
+    // Check Availability
+    const availablePax = checkAvailability(selectedDate, start, end);
+
+    // Update UI for availability
+    const availDisplay = document.getElementById('availabilityDisplay');
+    if (availDisplay) {
+        availDisplay.textContent = `(Available: ${availablePax})`;
+        availDisplay.style.color = availablePax > 0 ? 'green' : 'red';
+    }
+
+    // Update Pax Input Max
+    if (mode === 'Study') {
+        paxInput.max = availablePax;
+        if (requestedPax > availablePax) {
+            paxInput.value = availablePax; // Auto-adjust down
+        }
+    }
+
+    // Block if Event requested but not full room available
+    if (mode === 'Event' && availablePax < 20) {
+        document.getElementById('totalCost').textContent = "Unavailable (Room not empty)";
+        document.getElementById('durationDisplay').textContent = "-";
+        return; // Stop calculation
+    }
+
+    if (availablePax === 0) {
+        document.getElementById('totalCost').textContent = "Unavailable";
+        document.getElementById('durationDisplay').textContent = "-";
+        return;
+    }
+
     if (start && end) {
         // Handle 00:00 and 01:00 as next day for calculation
         let startHour = parseInt(start.split(':')[0]);
         let endHour = parseInt(end.split(':')[0]);
 
-        // Adjust for 12 AM (00:00) and 1 AM (01:00) being "next day" relative to 1 PM (13:00)
-        // We treat the operating day as 13:00 to 25:00 (1 AM next day)
-        if (startHour < 13) startHour += 24;
-        if (endHour < 13) endHour += 24;
+        startHour = normalizeHour(startHour);
+        endHour = normalizeHour(endHour);
 
         let diff = endHour - startHour;
 
@@ -210,7 +286,7 @@ function calculateCost() {
 
         let cost = 0;
         if (mode === 'Study') {
-            cost = 50 * diff * pax;
+            cost = 50 * diff * (parseInt(paxInput.value) || 1);
         } else {
             cost = 1000 * diff;
         }
@@ -228,12 +304,30 @@ bookingForm.addEventListener('submit', async (e) => {
 
     const start = get24HourTime(startHourInput.value, startAmPmInput.value);
     const end = get24HourTime(endHourInput.value, endAmPmInput.value);
+    const mode = bookingModeInput.value;
+
+    // Final Validation
+    const availablePax = checkAvailability(selectedDate, start, end);
+
+    if (mode === 'Event' && availablePax < 20) {
+        alert("Cannot book Event: The room is not fully available for the selected time.");
+        return;
+    }
+
+    if (mode === 'Study') {
+        const requestedPax = parseInt(paxInput.value);
+        if (requestedPax > availablePax) {
+            alert(`Only ${availablePax} seats available for this time.`);
+            return;
+        }
+    }
 
     // Validate time again
     let startHour = parseInt(start.split(':')[0]);
     let endHour = parseInt(end.split(':')[0]);
-    if (startHour < 13) startHour += 24;
-    if (endHour < 13) endHour += 24;
+
+    startHour = normalizeHour(startHour);
+    endHour = normalizeHour(endHour);
 
     if (endHour <= startHour) {
         alert("End time must be after start time.");
