@@ -41,6 +41,55 @@ async function fetchBookingsAndRenderCalendar() {
     }
 }
 
+function getDayAvailabilityStatus(dayBookings) {
+    // Initialize 12 hourly slots (13:00 to 25:00) with max capacity 20
+    // 13 = 1PM, 24 = 12AM, 25 = 1AM (closing time)
+    // We check availability for slots starting at 13, 14, ... 24.
+    const hourlyCapacity = {};
+    for (let h = 13; h < 25; h++) {
+        hourlyCapacity[h] = 20;
+    }
+
+    dayBookings.forEach(b => {
+        let startH = parseInt(b.startTime.split(':')[0]);
+        let endH = parseInt(b.endTime.split(':')[0]);
+
+        startH = normalizeHour(startH);
+        endH = normalizeHour(endH);
+
+        for (let h = startH; h < endH; h++) {
+            if (hourlyCapacity[h] !== undefined) {
+                if (b.mode === 'Event') {
+                    hourlyCapacity[h] = 0; // Event takes full room
+                } else {
+                    hourlyCapacity[h] -= (parseInt(b.pax) || 0);
+                }
+            }
+        }
+    });
+
+    let fullSlots = 0;
+    let totalSlots = 12;
+
+    for (let h = 13; h < 25; h++) {
+        if (hourlyCapacity[h] <= 0) {
+            fullSlots++;
+        }
+    }
+
+    if (fullSlots === totalSlots) return 'red'; // Fully booked all day
+    if (fullSlots > 0) return 'yellow'; // Partially booked (some hours full)
+
+    // Also check if any hour has < 20 capacity (even if not 0) -> Yellow
+    for (let h = 13; h < 25; h++) {
+        if (hourlyCapacity[h] < 20 && hourlyCapacity[h] > 0) {
+            return 'yellow';
+        }
+    }
+
+    return 'green'; // All slots have full capacity
+}
+
 function renderCalendar(month, year) {
     const grid = document.getElementById('calendarGrid');
     const monthDisplay = document.getElementById('currentMonthYear');
@@ -68,16 +117,13 @@ function renderCalendar(month, year) {
 
         // Check availability
         const dayBookings = bookings.filter(b => b.date === dateStr && b.status !== 'cancelled' && b.status !== 'rejected');
-        const isEvent = dayBookings.some(b => b.mode === 'Event');
 
-        let statusClass = 'green';
+        const status = getDayAvailabilityStatus(dayBookings);
+        let statusClass = status; // 'green', 'yellow', 'red'
         let isClickable = true;
 
-        if (isEvent) {
-            statusClass = 'red';
-            isClickable = false; // Event blocks the whole day
-        } else if (dayBookings.length > 0) {
-            statusClass = 'yellow';
+        if (status === 'red') {
+            isClickable = false;
         }
 
         const dot = document.createElement('span');
