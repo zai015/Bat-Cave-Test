@@ -131,19 +131,30 @@ function selectDate(dateStr, cellElement) {
 // --- BOOKING FORM LOGIC ---
 
 const bookingForm = document.getElementById('bookingForm');
-const startTimeInput = document.getElementById('startTime');
-const endTimeInput = document.getElementById('endTime');
+const startHourInput = document.getElementById('startHour');
+const startAmPmInput = document.getElementById('startAmPm');
+const endHourInput = document.getElementById('endHour');
+const endAmPmInput = document.getElementById('endAmPm');
 const bookingModeInput = document.getElementById('bookingMode');
 const paxInput = document.getElementById('pax');
 
+// Helper to get 24-hour format "HH:00"
+function get24HourTime(hourStr, amPm) {
+    if (!hourStr) return null;
+    let hour = parseInt(hourStr);
+    if (amPm === 'PM' && hour < 12) hour += 12;
+    if (amPm === 'AM' && hour === 12) hour = 0;
+    return `${String(hour).padStart(2, '0')}:00`;
+}
+
 // Auto-calculate duration and cost
-[startTimeInput, endTimeInput, bookingModeInput, paxInput, document.getElementById('projector'), document.getElementById('speaker')].forEach(el => {
+[startHourInput, startAmPmInput, endHourInput, endAmPmInput, bookingModeInput, paxInput, document.getElementById('projector'), document.getElementById('speaker')].forEach(el => {
     el.addEventListener('change', calculateCost);
 });
 
 function calculateCost() {
-    const start = startTimeInput.value;
-    const end = endTimeInput.value;
+    const start = get24HourTime(startHourInput.value, startAmPmInput.value);
+    const end = get24HourTime(endHourInput.value, endAmPmInput.value);
     const mode = bookingModeInput.value;
     const pax = parseInt(paxInput.value) || 1;
 
@@ -192,8 +203,8 @@ function calculateCost() {
 bookingForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const start = startTimeInput.value;
-    const end = endTimeInput.value;
+    const start = get24HourTime(startHourInput.value, startAmPmInput.value);
+    const end = get24HourTime(endHourInput.value, endAmPmInput.value);
 
     // Validate time again
     let startHour = parseInt(start.split(':')[0]);

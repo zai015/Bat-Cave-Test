@@ -85,11 +85,50 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Start Time</label>
-                        <input type="time" id="startTime" required>
+                        <div class="time-select-group" style="display: flex; gap: 5px;">
+                            <select id="startHour" required style="flex: 1;">
+                                <option value="" disabled selected>Hour</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                            <select id="startAmPm" required style="width: 70px;">
+                                <option value="PM" selected>PM</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>End Time</label>
-                        <input type="time" id="endTime" required>
+                        <div class="time-select-group" style="display: flex; gap: 5px;">
+                            <select id="endHour" required style="flex: 1;">
+                                <option value="" disabled selected>Hour</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">1</option>
+                            </select>
+                            <select id="endAmPm" required style="width: 70px;">
+                                <option value="AM">AM</option>
+                                <option value="PM" selected>PM</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
