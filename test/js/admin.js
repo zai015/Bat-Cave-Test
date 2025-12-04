@@ -5,6 +5,16 @@ document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
     document.getElementById('menuModal').style.display = 'none';
 
+    // Set Current Date
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const dateEl = document.getElementById('currentDate');
+    if (dateEl) {
+        dateEl.textContent = new Date().toLocaleDateString('en-US', dateOptions);
+    }
+
+    // Initialize Dashboard
+    initDashboard();
+
     fetchBookings();
     fetchMenu();
 
@@ -28,6 +38,77 @@ document.addEventListener('DOMContentLoaded', () => {
     // Menu Form Submit
     document.getElementById('menuForm').addEventListener('submit', saveMenuItem);
 });
+
+function initDashboard() {
+    // Check if chart elements exist before initializing
+    const salesCanvas = document.getElementById('salesChart');
+    const categoryCanvas = document.getElementById('categoryChart');
+
+    if (salesCanvas && categoryCanvas) {
+        // Sales Chart
+        const ctxSales = salesCanvas.getContext('2d');
+        new Chart(ctxSales, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Weekly Sales (₱)',
+                    data: [12000, 15000, 11000, 18000, 22000, 25000, 15400], // Manual Data
+                    borderColor: '#14b89c',
+                    backgroundColor: 'rgba(20, 184, 156, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#a0a0a0' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#a0a0a0' }
+                    }
+                }
+            }
+        });
+
+        // Category Chart
+        const ctxCategory = categoryCanvas.getContext('2d');
+        new Chart(ctxCategory, {
+            type: 'doughnut',
+            data: {
+                labels: ['Coffee', 'Pastries', 'Snacks', 'Equipment'],
+                datasets: [{
+                    data: [45, 25, 20, 10], // Manual Data
+                    backgroundColor: [
+                        '#14b89c', // Primary
+                        '#f57c00', // Orange
+                        '#1976d2', // Blue
+                        '#c2185b'  // Pink
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#a0a0a0' }
+                    }
+                }
+            }
+        });
+    }
+}
 
 function checkAuth() {
     const isAuth = localStorage.getItem('batCaveAdminAuth');
