@@ -124,37 +124,81 @@ function logout() {
 }
 
 // --- Bookings Logic ---
+// --- Bookings Logic ---
+let allBookings = [];
+let currentPage = 1;
+let rowsPerPage = 5;
+
 async function fetchBookings() {
     try {
         const response = await fetch(API_URL);
-        const bookings = await response.json();
+        allBookings = await response.json();
 
         // Update Pending Count KPI
-        const pendingCount = bookings.filter(b => b.status === 'pending').length;
+        const pendingCount = allBookings.filter(b => b.status === 'pending').length;
         const pendingEl = document.getElementById('pendingCount');
         if (pendingEl) {
             pendingEl.textContent = pendingCount;
         }
 
-        renderTable(bookings);
+        // Sort by date (newest first)
+        allBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        renderTable();
+        setupPagination();
     } catch (error) {
         console.error('Error fetching bookings:', error);
     }
 }
 
-function renderTable(bookings) {
+function setupPagination() {
+    const rowsSelect = document.getElementById('rowsPerPage');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+
+    if (rowsSelect) {
+        rowsSelect.addEventListener('change', (e) => {
+            rowsPerPage = parseInt(e.target.value);
+            currentPage = 1;
+            renderTable();
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            const totalPages = Math.ceil(allBookings.length / rowsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+            }
+        });
+    }
+}
+
+function renderTable() {
     const tbody = document.getElementById('reservationTable');
     tbody.innerHTML = '';
 
-    if (bookings.length === 0) {
+    if (allBookings.length === 0) {
         tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No bookings found.</td></tr>';
+        updatePaginationControls();
         return;
     }
 
-    // Sort by date (newest first)
-    bookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const paginatedItems = allBookings.slice(start, end);
 
-    bookings.forEach(b => {
+    paginatedItems.forEach(b => {
         const tr = document.createElement('tr');
 
         let statusColor = '#a0a0a0';
@@ -182,6 +226,19 @@ function renderTable(bookings) {
         `;
         tbody.appendChild(tr);
     });
+
+    updatePaginationControls();
+}
+
+function updatePaginationControls() {
+    const totalPages = Math.ceil(allBookings.length / rowsPerPage) || 1;
+    const pageIndicator = document.getElementById('pageIndicator');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+
+    if (pageIndicator) pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+    if (prevBtn) prevBtn.disabled = currentPage === 1;
+    if (nextBtn) nextBtn.disabled = currentPage === totalPages;
 }
 
 async function updateStatus(id, action) {
