@@ -12,7 +12,12 @@ let currentBookingData = null; // Store data for review step
 
 function showStep(stepId) {
     document.querySelectorAll('.wizard-step').forEach(el => el.style.display = 'none');
-    document.getElementById(stepId).style.display = 'block';
+    const step = document.getElementById(stepId);
+    if (stepId === 'step-returning-list') {
+        step.style.display = 'flex';
+    } else {
+        step.style.display = 'block';
+    }
     currentStep = stepId;
 }
 

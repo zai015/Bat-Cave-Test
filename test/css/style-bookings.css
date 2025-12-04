@@ -413,3 +413,43 @@ select:focus {
         gap: 0;
     }
 }
+
+/* SCROLLABLE BOOKING LIST */
+#step-returning-list {
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+    /* Occupy most of the screen */
+    max-height: 800px;
+}
+
+#bookingsListContainer {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    /* Space for scrollbar */
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* Custom Scrollbar */
+#bookingsListContainer::-webkit-scrollbar {
+    width: 8px;
+}
+
+#bookingsListContainer::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+#bookingsListContainer::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 4px;
+}
+
+#bookingsListContainer::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-hover);
+}
