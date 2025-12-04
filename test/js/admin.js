@@ -199,7 +199,8 @@ async function saveMenuItem(e) {
             closeMenuModal();
             fetchMenu();
         } else {
-            alert('Failed to save item.');
+            const result = await response.json();
+            alert(result.error || 'Failed to save item.');
         }
     } catch (error) {
         console.error('Error saving item:', error);
@@ -219,7 +220,8 @@ async function deleteMenuItem(id) {
         if (response.ok) {
             fetchMenu();
         } else {
-            alert('Failed to delete item.');
+            const result = await response.json();
+            alert(result.error || 'Failed to delete item.');
         }
     } catch (error) {
         console.error('Error deleting item:', error);
