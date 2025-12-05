@@ -160,8 +160,17 @@ body {
 .section-title {
     font-family: var(--font-heading);
     font-size: 2rem;
-    margin-bottom: 20px;
     color: var(--text-primary);
+    margin: 0;
+    /* Remove default margin as header handles spacing */
+}
+
+/* SECTION HEADER (Title + Actions) */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 /* TABLES */
