@@ -458,7 +458,7 @@ function openViewModal(booking) {
     const formattedEndTime = formatTime12(booking.endTime);
 
     details.innerHTML = `
-        <div style="display:grid; grid-template-columns: 100px 1fr; gap:10px; margin-bottom:15px; word-break: break-word;">
+        <div style="display:grid; grid-template-columns: 100px 1fr; gap:10px; margin-bottom:15px; overflow-wrap: anywhere;">
             <div style="color:var(--text-secondary);">Booking ID:</div>
             <div>${booking.id}</div>
             
@@ -487,7 +487,7 @@ function openViewModal(booking) {
         
         <div style="border-top:1px solid var(--border-light); padding-top:15px; margin-bottom:15px;">
             <h4 style="margin-bottom:10px;">Contact Information</h4>
-            <div style="display:grid; grid-template-columns: 100px 1fr; gap:10px;">
+            <div style="display:grid; grid-template-columns: 100px 1fr; gap:10px; overflow-wrap: anywhere;">
                 <div style="color:var(--text-secondary);">Name:</div>
                 <div>${booking.contact.name}</div>
                 
