@@ -27,14 +27,34 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', logout);
     }
 
-    // Simple tab switching
+    // Persistent tab switching
+    const savedTab = localStorage.getItem('activeAdminTab');
+    if (savedTab) {
+        const targetBtn = document.querySelector(`.nav-btn[data-target="${savedTab}"]`);
+        if (targetBtn) {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            targetBtn.classList.add('active');
+            const targetSection = document.getElementById(savedTab);
+            if (targetSection) targetSection.classList.add('active');
+        }
+    } else {
+        // Default to dashboard if no saved tab and no active class preset (though HTML sets dashboard active)
+        if (!document.querySelector('.nav-btn.active')) {
+            const defaultBtn = document.querySelector('.nav-btn[data-target="dashboard"]');
+            if (defaultBtn) defaultBtn.click();
+        }
+    }
+
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
 
             btn.classList.add('active');
-            document.getElementById(btn.dataset.target).classList.add('active');
+            const targetId = btn.dataset.target;
+            document.getElementById(targetId).classList.add('active');
+            localStorage.setItem('activeAdminTab', targetId);
         });
     });
 
