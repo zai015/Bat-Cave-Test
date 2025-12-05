@@ -42,7 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('menuForm').addEventListener('submit', saveMenuItem);
 
     // Gallery Form Submit
+    // Gallery Form Submit
     document.getElementById('galleryForm').addEventListener('submit', saveGalleryItem);
+
+    // Review Form Submit
+    document.getElementById('reviewForm').addEventListener('submit', saveReview);
 });
 
 function initDashboard() {
@@ -271,16 +275,83 @@ function updatePaginationControls() {
 }
 
 async function updateStatus(id, action) {
-    if (!confirm(`Are you sure you want to ${action} this booking?`)) return;
+    if (action === 'delete') {
+        if (!confirm(`Are you sure you want to delete this booking?`)) return;
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, action })
+            });
+
+            if (response.ok) {
+                fetchBookings(); // Refresh table
+            } else {
+                alert('Failed to delete booking.');
+            }
+        } catch (error) {
+            console.error('Error deleting booking:', error);
+        }
+        return;
+    }
+
+    // For Approve/Reject, use the modal
+    openReviewModal(id, action);
+}
+
+function openReviewModal(id, action) {
+    const modal = document.getElementById('reviewModal');
+    const title = document.getElementById('reviewTitle');
+    const submitBtn = document.getElementById('reviewSubmitBtn');
+    const warning = document.getElementById('rejectionWarning');
+    const noteLabel = document.getElementById('reviewNoteLabel');
+
+    document.getElementById('reviewId').value = id;
+    document.getElementById('reviewAction').value = action;
+    document.getElementById('reviewNote').value = ''; // Reset note
+
+    if (action === 'reject') {
+        title.textContent = 'Reject Booking';
+        submitBtn.textContent = 'Confirm Rejection';
+        submitBtn.style.background = '#f44336';
+        submitBtn.style.color = '#fff';
+        warning.style.display = 'block';
+        noteLabel.innerHTML = 'Reason for Rejection <span style="color:red">*</span>';
+        document.getElementById('reviewNote').required = true;
+    } else {
+        title.textContent = 'Approve Booking';
+        submitBtn.textContent = 'Confirm Approval';
+        submitBtn.style.background = '#4caf50';
+        submitBtn.style.color = '#fff';
+        warning.style.display = 'none';
+        noteLabel.textContent = 'Note (Optional)';
+        document.getElementById('reviewNote').required = false;
+    }
+
+    modal.style.display = 'block';
+}
+
+function closeReviewModal() {
+    document.getElementById('reviewModal').style.display = 'none';
+}
+
+async function saveReview(e) {
+    e.preventDefault();
+
+    const id = document.getElementById('reviewId').value;
+    const action = document.getElementById('reviewAction').value;
+    const note = document.getElementById('reviewNote').value;
 
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id, action })
+            body: JSON.stringify({ id, action, note }) // Send note to backend
         });
 
         if (response.ok) {
+            closeReviewModal();
             fetchBookings(); // Refresh table
         } else {
             alert('Failed to update booking.');
@@ -538,6 +609,8 @@ async function saveGalleryItem(e) {
 window.onclick = function (event) {
     const galleryModal = document.getElementById('galleryModal');
     const menuModal = document.getElementById('menuModal');
+    const reviewModal = document.getElementById('reviewModal');
     if (event.target == galleryModal) closeGalleryModal();
     if (event.target == menuModal) closeMenuModal();
+    if (event.target == reviewModal) closeReviewModal();
 }

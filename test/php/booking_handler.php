@@ -108,9 +108,15 @@ if ($method === 'GET') {
                 $found = true;
                 if ($input['action'] === 'approve') {
                     $booking['status'] = 'confirmed';
+                    if (isset($input['note'])) {
+                        $booking['review_note'] = $input['note'];
+                    }
                     $updatedBookings[] = $booking;
                 } elseif ($input['action'] === 'reject') {
                     $booking['status'] = 'rejected';
+                    if (isset($input['note'])) {
+                        $booking['review_note'] = $input['note'];
+                    }
                     $updatedBookings[] = $booking;
                 } elseif ($input['action'] === 'delete') {
                     // Skip adding to updatedBookings to delete

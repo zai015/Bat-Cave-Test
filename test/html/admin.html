@@ -230,6 +230,35 @@
         </div>
     </div>
 
+    <!-- Review Modal (Approve/Reject) -->
+    <div id="reviewModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeReviewModal()">&times;</span>
+            <h2 id="reviewTitle">Review Booking</h2>
+            <form id="reviewForm">
+                <input type="hidden" id="reviewId">
+                <input type="hidden" id="reviewAction">
+
+                <div class="form-group">
+                    <label id="reviewNoteLabel">Note (Optional)</label>
+                    <textarea id="reviewNote" rows="4" placeholder="Enter reason or note..."></textarea>
+                </div>
+
+                <div class="form-group" id="rejectionWarning" style="display:none;">
+                    <p style="color:var(--status-danger); font-size:0.9rem;">
+                        <span style="font-weight:bold;">Warning:</span> Rejecting a booking is permanent.
+                    </p>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" class="action-btn" onclick="closeReviewModal()"
+                        style="background:transparent; border:1px solid var(--text-secondary); color:var(--text-secondary);">Cancel</button>
+                    <button type="submit" id="reviewSubmitBtn" class="submit-btn" style="width:auto;">Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../js/admin.js"></script>
 </body>
 

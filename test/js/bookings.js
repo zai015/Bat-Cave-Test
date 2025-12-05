@@ -782,6 +782,11 @@ function renderBookingsList(bookingsList) {
             ${b.mode === 'Study' ? `<p><strong>Pax:</strong> ${b.pax}</p>` : ''}
             <p><strong>Cost:</strong> ₱${b.cost}</p>
             <p><strong>Status:</strong> <span style="color:${statusColor}; font-weight:bold">${b.status.toUpperCase()}</span></p>
+            ${b.status === 'rejected' && b.review_note ? `
+                <div style="background:rgba(244,67,54,0.1); border-left:3px solid #f44336; padding:10px; margin-top:10px; font-size:0.9em;">
+                    <strong>Reason:</strong> ${b.review_note}
+                </div>
+            ` : ''}
         `;
         container.appendChild(card);
     });
