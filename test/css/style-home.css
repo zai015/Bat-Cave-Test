@@ -299,10 +299,12 @@ section {
   animation: fadeInUp 0.8s ease;
 }
 
+/* Standardized Main Title */
 .intro-big-text {
   font-family: var(--font-heading);
-  font-size: clamp(4rem, 10vw, 12rem);
-  line-height: clamp(4rem, 10vw, 12rem);
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  /* Reduced from 12rem */
+  line-height: 1.1;
   color: var(--text-primary);
   font-weight: 500;
   animation: fadeInUp 0.8s ease 0.2s both;
@@ -364,7 +366,8 @@ section {
 
 .about-us-header h2 {
   font-family: var(--font-heading);
-  font-size: 4rem;
+  font-size: 3rem;
+  /* Standard title size */
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: 1px;
@@ -598,7 +601,8 @@ section {
 
 #menu-heading {
   font-family: var(--font-heading);
-  font-size: 2rem;
+  font-size: 3rem;
+  /* Standard title size */
   text-align: center;
 }
 
@@ -620,7 +624,8 @@ section {
 /*  START OF GALLERY SECTION */
 #gallery-heading {
   font-family: var(--font-heading);
-  font-size: 4rem;
+  font-size: 3rem;
+  /* Standard title size */
   text-align: center;
 }
 

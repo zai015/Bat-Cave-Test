@@ -96,7 +96,8 @@ body::before {
 
 .page-header h1 {
   font-family: var(--font-heading);
-  font-size: 44px;
+  font-size: 3rem;
+  /* Standard title size */
   margin: 6px 0;
   color: #fff;
   letter-spacing: 0.6px

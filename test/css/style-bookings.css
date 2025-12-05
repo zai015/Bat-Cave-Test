@@ -108,9 +108,8 @@ h1 {
     font-family: var(--font-heading);
     color: var(--text-primary);
     margin-bottom: 15px;
-    /* Reduced from 20px */
-    font-size: 2rem;
-    /* Reduced from 2.5rem */
+    font-size: 3rem;
+    /* Standard title size */
 }
 
 p {
