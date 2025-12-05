@@ -239,8 +239,9 @@
         },
         "addOns": [],
         "cost": "2000.00",
-        "status": "pending",
-        "createdAt": "2025-12-04T18:22:02+00:00"
+        "status": "confirmed",
+        "createdAt": "2025-12-04T18:22:02+00:00",
+        "review_note": ""
     },
     {
         "id": "bk_6931d233f38a7",
@@ -275,8 +276,9 @@
         },
         "addOns": [],
         "cost": "400.00",
-        "status": "pending",
-        "createdAt": "2025-12-04T18:34:15+00:00"
+        "status": "confirmed",
+        "createdAt": "2025-12-04T18:34:15+00:00",
+        "review_note": "test approval"
     },
     {
         "id": "bk_6931d4fd9cbab",

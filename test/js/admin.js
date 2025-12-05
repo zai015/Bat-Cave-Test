@@ -248,7 +248,10 @@ function renderTable() {
             <td>${b.date}</td>
             <td>${b.startTime} - ${b.endTime}</td>
             <td>${b.mode} ${b.mode === 'Study' ? `(${b.pax})` : ''}</td>
-            <td><span style="color:${statusColor}; font-weight:600; text-transform:uppercase;">${b.status}</span></td>
+            <td>
+                <span style="color:${statusColor}; font-weight:600; text-transform:uppercase;">${b.status}</span>
+                ${b.review_note ? `<div style="font-size:0.8em; color:#a0a0a0; margin-top:4px; max-width:150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="Note: ${b.review_note}"><i style="margin-right:3px;">Note: </i>${b.review_note}</div>` : ''}
+            </td>
             <td>
                 ${b.status === 'pending' ? `
                     <button class="action-btn btn-approve" onclick="updateStatus('${b.id}', 'approve')">Approve</button>
