@@ -233,6 +233,12 @@ function renderTable() {
 
     paginatedItems.forEach(b => {
         const tr = document.createElement('tr');
+        tr.style.cursor = 'pointer'; // Make row look clickable
+        tr.onclick = (e) => {
+            // Prevent opening request if clicking an action button
+            if (e.target.closest('button')) return;
+            openViewModal(b);
+        };
 
         let statusColor = '#a0a0a0';
         if (b.status === 'confirmed') statusColor = '#4caf50';
@@ -245,8 +251,8 @@ function renderTable() {
                 <strong>${b.contact.name}</strong><br>
                 <small>${b.contact.phone}</small>
             </td>
-            <td>${b.date}</td>
-            <td>${b.startTime} - ${b.endTime}</td>
+            <td>${formatDateReadable(b.date)}</td>
+            <td>${formatTime12(b.startTime)} - ${formatTime12(b.endTime)}</td>
             <td>${b.mode} ${b.mode === 'Study' ? `(${b.pax})` : ''}</td>
             <td>
                 <span style="color:${statusColor}; font-weight:600; text-transform:uppercase;">${b.status}</span>
@@ -438,6 +444,102 @@ function closeMenuModal() {
     document.getElementById('menuModal').style.display = 'none';
 }
 
+function openViewModal(booking) {
+    const modal = document.getElementById('viewBookingModal');
+    const details = document.getElementById('viewBookingDetails');
+
+    const statusColor = booking.status === 'confirmed' ? '#4caf50' :
+        booking.status === 'rejected' ? '#f44336' :
+            booking.status === 'pending' ? '#ff9800' : '#a0a0a0';
+
+    // Format Date and Time
+    const formattedDate = formatDateReadable(booking.date);
+    const formattedStartTime = formatTime12(booking.startTime);
+    const formattedEndTime = formatTime12(booking.endTime);
+
+    details.innerHTML = `
+        <div style="display:grid; grid-template-columns: 100px 1fr; gap:10px; margin-bottom:15px; word-break: break-word;">
+            <div style="color:var(--text-secondary);">Booking ID:</div>
+            <div>${booking.id}</div>
+            
+            <div style="color:var(--text-secondary);">Status:</div>
+            <div style="color:${statusColor}; font-weight:bold; text-transform:uppercase;">${booking.status}</div>
+            ${booking.review_note ? `
+                <div style="color:var(--text-secondary);">Note:</div>
+                <div style="color:#f44336;">${booking.review_note}</div>
+            ` : ''}
+
+            <div style="color:var(--text-secondary);">Date:</div>
+            <div>${formattedDate}</div>
+
+            <div style="color:var(--text-secondary);">Time:</div>
+            <div>${formattedStartTime} - ${formattedEndTime} (${booking.duration} hrs)</div>
+
+            <div style="color:var(--text-secondary);">Mode:</div>
+            <div>${booking.mode} ${booking.mode === 'Study' ? `(${booking.pax} Pax)` : ''}</div>
+
+            <div style="color:var(--text-secondary);">Add-ons:</div>
+            <div>${booking.addOns && booking.addOns.length > 0 ? booking.addOns.join(', ') : 'None'}</div>
+
+            <div style="color:var(--text-secondary);">Cost:</div>
+            <div style="font-weight:bold; color:var(--accent-primary);">₱${booking.cost}</div>
+        </div>
+        
+        <div style="border-top:1px solid var(--border-light); padding-top:15px; margin-bottom:15px;">
+            <h4 style="margin-bottom:10px;">Contact Information</h4>
+            <div style="display:grid; grid-template-columns: 100px 1fr; gap:10px;">
+                <div style="color:var(--text-secondary);">Name:</div>
+                <div>${booking.contact.name}</div>
+                
+                <div style="color:var(--text-secondary);">Phone:</div>
+                <div>${booking.contact.phone}</div>
+                
+                <div style="color:var(--text-secondary);">Email:</div>
+                <div>${booking.contact.email}</div>
+            </div>
+        </div>
+
+        ${booking.status === 'pending' ? `
+            <div style="border-top:1px solid var(--border-light); padding-top:15px; display:flex; gap:10px; justify-content:flex-end;">
+                <button class="action-btn btn-approve" style="padding:8px 16px;" onclick="handleViewAction('${booking.id}', 'approve')">Approve</button>
+                <button class="action-btn btn-reject" style="padding:8px 16px;" onclick="handleViewAction('${booking.id}', 'reject')">Reject</button>
+            </div>
+        ` : ''}
+    `;
+
+    modal.style.display = 'block';
+}
+
+function handleViewAction(id, action) {
+    closeViewModal();
+    updateStatus(id, action);
+}
+
+// Helper Functions
+function formatDateReadable(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+}
+
+function formatTime12(time24) {
+    if (!time24) return '';
+    let [hour, minute] = time24.split(':');
+    hour = parseInt(hour);
+    const amPm = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12 || 12;
+    return `${hour}:${minute} ${amPm}`;
+}
+
+function closeViewModal() {
+    document.getElementById('viewBookingModal').style.display = 'none';
+}
+
+function closeReviewModal() {
+    document.getElementById('reviewModal').style.display = 'none';
+}
+
 window.onclick = function (event) {
     const modal = document.getElementById('menuModal');
     if (event.target == modal) {
@@ -613,7 +715,9 @@ window.onclick = function (event) {
     const galleryModal = document.getElementById('galleryModal');
     const menuModal = document.getElementById('menuModal');
     const reviewModal = document.getElementById('reviewModal');
+    const viewBookingModal = document.getElementById('viewBookingModal');
     if (event.target == galleryModal) closeGalleryModal();
     if (event.target == menuModal) closeMenuModal();
     if (event.target == reviewModal) closeReviewModal();
+    if (event.target == viewBookingModal) closeViewModal();
 }

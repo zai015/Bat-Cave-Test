@@ -259,6 +259,21 @@
         </div>
     </div>
 
+    <!-- View Booking Details Modal -->
+    <div id="viewBookingModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeViewModal()">&times;</span>
+            <h2>Booking Details</h2>
+            <div id="viewBookingDetails" style="margin-top:20px; line-height:1.6;">
+                <!-- Details injected via JS -->
+            </div>
+            <div style="margin-top:20px; text-align:right;">
+                <button class="action-btn" onclick="closeViewModal()"
+                    style="background:var(--bg-input); border:1px solid var(--border-light); color:var(--text-primary);">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../js/admin.js"></script>
 </body>
 
