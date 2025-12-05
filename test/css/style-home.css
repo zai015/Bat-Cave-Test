@@ -289,6 +289,18 @@ section {
   text-align: left;
 }
 
+h1 {
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  /* Standardized margin */
+  font-size: 3rem;
+  font-weight: 700;
+  /* Explicit weight match */
+  letter-spacing: 1px;
+  /* Match others */
+}
+
 /* Left intro text */
 .intro-small-text {
   font-style: italic;
@@ -371,6 +383,8 @@ section {
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: 1px;
+  margin-bottom: 1rem;
+  /* Add explicit margin */
 }
 
 /*  START OF CAROUSEL SECTION   */
