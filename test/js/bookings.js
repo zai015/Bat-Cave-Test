@@ -288,7 +288,8 @@ function updateEndTimeOptions() {
         let currentEndHNorm = parseInt(currentEndTimeStr.split(':')[0]);
         currentEndHNorm = normalizeHour(currentEndHNorm);
 
-        if (currentEndHNorm <= startH || (options.namedItem && options.namedItem(currentEndVal).disabled)) {
+        // Check if the current end time is valid based on start time and limits
+        if (currentEndHNorm <= startH || currentEndHNorm > limitH) {
             // Also check if the specific option is disabled (covers the new limit logic)
             // But options collection access by value might be tricky, let's rely on the loop above or re-check
             // Simpler: iterate options again or check if the value is valid

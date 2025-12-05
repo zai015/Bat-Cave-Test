@@ -22,6 +22,7 @@
             <button class="nav-btn active" data-target="dashboard">Dashboard</button>
             <button class="nav-btn" data-target="reservations">Reservations</button>
             <button class="nav-btn" data-target="menu">Menu</button>
+            <button class="nav-btn" data-target="gallery">Gallery</button>
         </nav>
 
         <main class="admin-content">
@@ -123,6 +124,18 @@
                     <tbody id="menuTable"></tbody>
                 </table>
             </section>
+
+            <!-- Gallery Section -->
+            <section id="gallery" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">Gallery Management</h2>
+                </div>
+                <!-- Gallery Grid -->
+                <div class="gallery-grid" id="galleryGrid"
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+                    <!-- Gallery items will be injected here -->
+                </div>
+            </section>
         </main>
 
     </div>
@@ -183,6 +196,35 @@
                 </div>
 
                 <button type="submit" class="submit-btn">Save Item</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Gallery Item Modal -->
+    <div id="galleryModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeGalleryModal()">&times;</span>
+            <h2>Edit Gallery Image</h2>
+            <form id="galleryForm">
+                <input type="hidden" id="galleryId">
+
+                <div class="form-group">
+                    <label>Current Image</label>
+                    <img id="galleryPreview" src=""
+                        style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+                </div>
+
+                <div class="form-group">
+                    <label>Upload New Image</label>
+                    <input type="file" id="galleryImageFile" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label>Caption (Optional)</label>
+                    <input type="text" id="galleryCaption" placeholder="Image Caption">
+                </div>
+
+                <button type="submit" class="submit-btn" style="margin-top: 15px;">Save Changes</button>
             </form>
         </div>
     </div>

@@ -1,5 +1,6 @@
 const API_URL = '../php/booking_handler.php';
 const MENU_API_URL = '../php/menu_handler.php';
+const GALLERY_API_URL = '../php/gallery_handler.php';
 
 document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
@@ -16,7 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
 
     fetchBookings();
+    fetchBookings();
     fetchMenu();
+    fetchGallery();
 
     // Logout Button
     const logoutBtn = document.querySelector('.logout-btn');
@@ -37,6 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Menu Form Submit
     document.getElementById('menuForm').addEventListener('submit', saveMenuItem);
+
+    // Gallery Form Submit
+    document.getElementById('galleryForm').addEventListener('submit', saveGalleryItem);
 });
 
 function initDashboard() {
@@ -405,4 +411,110 @@ async function deleteMenuItem(id) {
     } catch (error) {
         console.error('Error deleting item:', error);
     }
+}
+
+// --- Gallery Logic ---
+let galleryItems = [];
+
+async function fetchGallery() {
+    try {
+        const response = await fetch(GALLERY_API_URL);
+        galleryItems = await response.json();
+        renderGalleryGrid(galleryItems);
+    } catch (error) {
+        console.error('Error fetching gallery:', error);
+    }
+}
+
+function renderGalleryGrid(items) {
+    const container = document.getElementById('galleryGrid');
+    container.innerHTML = '';
+
+    // Ensure we render 8 slots, using data if available, else placeholder
+    for (let i = 1; i <= 8; i++) {
+        const item = items.find(g => g.id === i) || { id: i, image: '', caption: '' };
+
+        const card = document.createElement('div');
+        card.className = 'kpi-card'; // Reuse card style or define specific
+        card.style.flexDirection = 'column';
+        card.style.alignItems = 'flex-start';
+        card.style.gap = '10px';
+
+        card.innerHTML = `
+            <div style="width:100%; height:150px; background:#2a2a2a; border-radius:8px; overflow:hidden; position:relative;">
+                ${item.image ? `<img src="${item.image}" style="width:100%; height:100%; object-fit:cover;">` : '<span style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:#555;">No Image</span>'}
+            </div>
+            <div>
+                <h4 style="margin:0;">Slot ${i}</h4>
+                <p style="margin:0; font-size:0.9em; color:#a0a0a0;">${item.caption || 'No caption'}</p>
+            </div>
+            <button class="action-btn btn-approve" style="width:100%;" onclick="openGalleryModal(${i})">Edit Slot</button>
+        `;
+        container.appendChild(card);
+    }
+}
+
+function openGalleryModal(id) {
+    const modal = document.getElementById('galleryModal');
+    const item = galleryItems.find(g => g.id === id) || { id: id, image: '', caption: '' };
+
+    document.getElementById('galleryId').value = item.id;
+    document.getElementById('galleryPreview').src = item.image || '';
+    document.getElementById('galleryCaption').value = item.caption || '';
+    document.getElementById('galleryImageFile').value = ''; // Reset file input
+
+    // Hide preview if no image
+    document.getElementById('galleryPreview').style.display = item.image ? 'block' : 'none';
+
+    modal.style.display = 'block';
+}
+
+function closeGalleryModal() {
+    document.getElementById('galleryModal').style.display = 'none';
+}
+
+async function saveGalleryItem(e) {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('id', document.getElementById('galleryId').value);
+    formData.append('caption', document.getElementById('galleryCaption').value);
+
+    // Handle Image
+    const fileInput = document.getElementById('galleryImageFile');
+    if (fileInput.files.length > 0) {
+        formData.append('imageFile', fileInput.files[0]);
+    } else {
+        // Pass existing image path if needed, though backend uses file mostly
+        // If we want to support clearing image, we might need more logic, but here assume edit means replace or keep
+        const id = parseInt(document.getElementById('galleryId').value);
+        const item = galleryItems.find(g => g.id === id);
+        if (item && item.image) {
+            formData.append('image', item.image);
+        }
+    }
+
+    try {
+        const response = await fetch(GALLERY_API_URL, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            closeGalleryModal();
+            fetchGallery();
+        } else {
+            const result = await response.json();
+            alert(result.error || 'Failed to save gallery item.');
+        }
+    } catch (error) {
+        console.error('Error gallery item:', error);
+    }
+}
+
+window.onclick = function (event) {
+    const galleryModal = document.getElementById('galleryModal');
+    const menuModal = document.getElementById('menuModal');
+    if (event.target == galleryModal) closeGalleryModal();
+    if (event.target == menuModal) closeMenuModal();
 }

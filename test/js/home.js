@@ -128,22 +128,62 @@ function renderPopularMenu(items) {
 }
 
 /* ======================================================= */
+/*                 GALLERY HANDLER                         */
+/* ======================================================= */
+
+const GALLERY_API_URL = '../php/gallery_handler.php';
+
+document.addEventListener('DOMContentLoaded', () => {
+  fetchGallery();
+});
+
+async function fetchGallery() {
+  try {
+    const response = await fetch(GALLERY_API_URL);
+    const galleryItems = await response.json();
+    renderGallery(galleryItems);
+  } catch (error) {
+    console.error('Error fetching gallery:', error);
+  }
+}
+
+function renderGallery(items) {
+  const container = document.getElementById('gallery-container');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  items.forEach(item => {
+    // Only render if image path exists
+    if (item.image) {
+      const img = document.createElement('img');
+      img.src = item.image;
+      img.alt = item.caption || 'Gallery Image';
+      container.appendChild(img);
+    }
+  });
+
+  // Re-init lightbox or use delegation (using delegation below)
+}
+
+
+/* ======================================================= */
 /*                 GALLERY LIGHTBOX HANDLER                */
 /* ======================================================= */
 document.addEventListener('DOMContentLoaded', () => {
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
   const closeBtn = document.querySelector('.lightbox .close');
-  const galleryImages = document.querySelectorAll('.gallery .box-container img');
+  const galleryContainer = document.getElementById('gallery-container');
 
-  if (lightbox && lightboxImg && galleryImages.length > 0) {
-    // Open lightbox
-    galleryImages.forEach(img => {
-      img.addEventListener('click', () => {
+  if (lightbox && lightboxImg && galleryContainer) {
+    // Open lightbox (Event Delegation)
+    galleryContainer.addEventListener('click', (e) => {
+      if (e.target.tagName === 'IMG') {
         lightbox.style.display = 'flex';
-        lightboxImg.src = img.src;
+        lightboxImg.src = e.target.src;
         document.body.style.overflow = 'hidden'; // Prevent scrolling
-      });
+      }
     });
 
     // Close on button click
