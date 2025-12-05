@@ -466,7 +466,7 @@ function openViewModal(booking) {
             <div style="color:${statusColor}; font-weight:bold; text-transform:uppercase;">${booking.status}</div>
             ${booking.review_note ? `
                 <div style="color:var(--text-secondary);">Note:</div>
-                <div style="color:#f44336;">${booking.review_note}</div>
+                <div style="color:${statusColor}; overflow-wrap: anywhere;">${booking.review_note}</div>
             ` : ''}
 
             <div style="color:var(--text-secondary);">Date:</div>
