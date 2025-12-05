@@ -100,7 +100,7 @@
     },
     {
         "id": "item_11",
-        "name": "Projector (per hour)",
+        "name": "Projector",
         "price": 150,
         "description": "High-brightness projector available for bookings. Rate charged per hour.",
         "subDescription": "Booking equipment",
@@ -111,7 +111,7 @@
     },
     {
         "id": "item_12",
-        "name": "Speaker & Mic (per hour)",
+        "name": "Speaker & Mic ",
         "price": 150,
         "description": "Speaker and mic set available for events and study sessions \u2014 charged per hour.",
         "subDescription": "Booking equipment",
