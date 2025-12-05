@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
 
     fetchBookings();
-    fetchBookings();
+
     fetchMenu();
     fetchGallery();
 
@@ -150,6 +150,16 @@ async function fetchBookings() {
         // Sort by date (newest first)
         allBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
+        // Restore rows per page preference
+        const savedRows = localStorage.getItem('adminRowsPerPage');
+        if (savedRows) {
+            if (savedRows === 'all') {
+                rowsPerPage = allBookings.length;
+            } else {
+                rowsPerPage = parseInt(savedRows);
+            }
+        }
+
         renderTable();
         setupPagination();
     } catch (error) {
@@ -163,8 +173,21 @@ function setupPagination() {
     const nextBtn = document.getElementById('nextPage');
 
     if (rowsSelect) {
+        // Sync dropdown with current state
+        const savedRows = localStorage.getItem('adminRowsPerPage');
+        if (savedRows) {
+            rowsSelect.value = savedRows;
+        }
+
         rowsSelect.addEventListener('change', (e) => {
-            rowsPerPage = parseInt(e.target.value);
+            const val = e.target.value;
+            localStorage.setItem('adminRowsPerPage', val);
+
+            if (val === 'all') {
+                rowsPerPage = allBookings.length;
+            } else {
+                rowsPerPage = parseInt(val);
+            }
             currentPage = 1;
             renderTable();
         });
